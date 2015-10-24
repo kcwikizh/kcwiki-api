@@ -1,0 +1,5 @@
+/vendor
+.env
+.idea
+.DS_STORE
+/database/database.sqlite

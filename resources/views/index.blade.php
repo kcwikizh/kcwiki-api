@@ -51,10 +51,11 @@
                             <input name="_token" type="hidden" value= "{{ csrf_token() }}">
                             <div class="field">
                                 <label>标题</label>
-                                <input name="title" type="text" value="{{ $new->title }}"></div>
+                                <input name="title" type="text" value="{{ $new->title }}" placeholder="请输入新闻标题"></div>
                             <div class="field">
                                 <label>舰娘</label>
                                 <select class="ui fluid search dropdown ship" multiple="" name="ship[]">
+                                <option value="">搜索或选择新闻更新相关的舰娘</option>
                                 @foreach($ships as $ship)
                                 <option value="{{ $ship->id }}">{{ $ship->name }}({{ $ship->id }})</option>
                                 @endforeach
@@ -63,6 +64,7 @@
                             <div class="field">
                                 <label>装备</label>
                                 <select class="ui fluid search dropdown equip" multiple="" name="equip[]">
+                                <option value="">搜索或选择新闻更新相关的装备</option>
                                 @foreach($equips as $equip)
                                 <option value="{{ $equip->id }}">{{ $equip->name }}({{ $equip->id }})</option>
                                 @endforeach
@@ -71,6 +73,7 @@
                             <div class="field">
                                 <label>地图</label>
                                 <select class="ui fluid search dropdown quest" multiple="" name="quest[]">
+                                <option value="">搜索或选择新闻更新相关的地图</option>
                                 @foreach($maps as $map)
                                 <option value="{{ $map->id }}">{{ $map->name }}({{ $map->id }})</option>
                                 @endforeach
@@ -97,10 +100,11 @@
                     <input name="_token" type="hidden" value= "{{ csrf_token() }}">
                     <div class="field">
                         <label>标题</label>
-                        <input name="title" type="text" value=""></div>
+                        <input name="title" type="text" value="" placeholder="输入新闻标题"></div>
                     <div class="field">
                         <label>舰娘</label>
                         <select class="ui fluid search dropdown" multiple="" name="ship[]">
+                            <option value="">搜索或选择新闻更新相关的舰娘</option>
                             @foreach($ships as $ship)
                             <option value="{{ $ship->id }}">{{ $ship->name }}({{ $ship->id }})</option>
                             @endforeach
@@ -108,6 +112,7 @@
                     <div class="field">
                         <label>装备</label>
                         <select class="ui fluid search dropdown" multiple="" name="equip[]">
+                        <option value="">搜索或选择新闻更新相关的装备</option>
                         @foreach($equips as $equip)
                         <option value="{{ $equip->id }}">{{ $equip->name }}({{ $equip->id }})</option>
                         @endforeach
@@ -115,6 +120,7 @@
                     <div class="field">
                         <label>地图</label>
                         <select class="ui fluid search dropdown" multiple="" name="quest[]">
+                        <option value="">搜索或选择新闻更新相关的地图</option>
                         @foreach($maps as $map)
                         <option value="{{ $map->id }}">{{ $map->name }}({{ $map->id }})</option>
                         @endforeach

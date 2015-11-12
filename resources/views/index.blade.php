@@ -16,9 +16,10 @@
         <div class="column">
             <div class="ui blue segment">
                 <h2 class="ui centered dividing header">舰娘百科新闻</h2>
-                <div class="ui menu">
-                    <a href="/" class="item">首页</a>
+                <div class="ui blue secondary pointing menu">
+                    <a href="/" class="active item">首页</a>
                     <a href="/news" class="item">新闻JSON</a>
+                    <a href="/meta" class="item">API数据对照表</a>
                     <div class="right menu">
                         <a href="/login" class="item">登录</a>
                         <a href="/logout" class="item">登出</a>
@@ -46,30 +47,47 @@
                         {{ $new->title }}
                     </div>
                     <div class="content">
-                        <form action="news/{{$new->id}}" method="post" class="ui form">
+                        <form action="news/{{$new->id}}" method="post" class="ui form news-{{$new->id}}">
                             <input name="_token" type="hidden" value= "{{ csrf_token() }}">
                             <div class="field">
                                 <label>标题</label>
                                 <input name="title" type="text" value="{{ $new->title }}"></div>
                             <div class="field">
                                 <label>舰娘</label>
-                                <input name="ship" type="text" value="{{ $new->ship }}"></div>
+                                <select class="ui fluid search dropdown ship" multiple="" name="ship[]">
+                                @foreach($ships as $ship)
+                                <option value="{{ $ship->id }}">{{ $ship->name }}({{ $ship->id }})</option>
+                                @endforeach
+                                </select>
+                            </div>
                             <div class="field">
                                 <label>装备</label>
-                                <input name="equip" type="text" value="{{ $new->equip }}"></div>
+                                <select class="ui fluid search dropdown equip" multiple="" name="equip[]">
+                                @foreach($equips as $equip)
+                                <option value="{{ $equip->id }}">{{ $equip->name }}({{ $equip->id }})</option>
+                                @endforeach
+                                </select>
+                            </div>
                             <div class="field">
                                 <label>地图</label>
-                                <input name="quest" type="text" value="{{ $new->quest }}"></div>
+                                <select class="ui fluid search dropdown quest" multiple="" name="quest[]">
+                                @foreach($maps as $map)
+                                <option value="{{ $map->id }}">{{ $map->name }}({{ $map->id }})</option>
+                                @endforeach
+                                </select>
+                            </div>
                             <div class="field">
                                 <label>内容</label>
                                 <textarea name="content" cols="30" rows="5">{{ $new->content }}</textarea>
                             </div>
                             <div class="ui inverted divider"></div>
-                            <input type="submit" value="编辑" class="ui green button right floated"></form>
+                            <input type="submit" value="编辑" class="ui green button right floated">
+                        </form>
                         <form action="news/{{$new->id}}" method="post">
                             <input name="_token" type="hidden" value= "{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="delete">
-                            <input type="submit" value="删除" class="ui red button right floated"></form>
+                            <input type="submit" value="删除" class="ui red button right floated">
+                        </form>
                         <div style="clear:both;"></div>
                     </div>
                     @endforeach
@@ -82,13 +100,25 @@
                         <input name="title" type="text" value=""></div>
                     <div class="field">
                         <label>舰娘</label>
-                        <input name="ship" type="text" value=""></div>
+                        <select class="ui fluid search dropdown" multiple="" name="ship[]">
+                            @foreach($ships as $ship)
+                            <option value="{{ $ship->id }}">{{ $ship->name }}({{ $ship->id }})</option>
+                            @endforeach
+                        </select>
                     <div class="field">
                         <label>装备</label>
-                        <input name="equip" type="text" value=""></div>
+                        <select class="ui fluid search dropdown" multiple="" name="equip[]">
+                        @foreach($equips as $equip)
+                        <option value="{{ $equip->id }}">{{ $equip->name }}({{ $equip->id }})</option>
+                        @endforeach
+                        </select>
                     <div class="field">
                         <label>地图</label>
-                        <input name="quest" type="text" value=""></div>
+                        <select class="ui fluid search dropdown" multiple="" name="quest[]">
+                        @foreach($maps as $map)
+                        <option value="{{ $map->id }}">{{ $map->name }}({{ $map->id }})</option>
+                        @endforeach
+                        </select>
                     <div class="field">
                         <label>内容</label>
                         <textarea name="content" cols="30" rows="5"></textarea>
@@ -100,22 +130,24 @@
             </div>
         </div>
     </div>
-    <div class="ui modal">
-        <i class="close icon"></i>
-        <div class="header">Modal Title</div>
-        <div class="content">A description can appear on the right</div>
-        <div class="actions">
-            <div class="ui button">Cancel</div>
-            <div class="ui button">OK</div>
-        </div>
-    </div>
     <script src="/js/jquery.js"></script>
     <script src="/js/semantic.min.js"></script>
     <script>
         $(function(){
-            $('.accordion').accordion();
-            $('.ui.modal').modal();
-        });
+            $('.ui.dropdown').dropdown();
+            $('.ui.accordion').accordion();
+            var className = '';
+            var raw = '';
+            @foreach($news as $new)
+            className = '.news-{{$new->id}}';
+            raw = '{{$new->ship}}';
+            $(className + ' .ship').dropdown('set selected', raw.split(','));
+            raw = '{{$new->quest}}';
+            $(className + ' .quest').dropdown('set selected', raw.split(','));
+            raw = '{{$new->equip}}';
+            $(className + ' .equip').dropdown('set selected', raw.split(','));
+            @endforeach
+        });        
     </script>
 </body>
 </html>

@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
+use Illuminate\Support\Facades\Storage;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,16 +19,21 @@ use App\News;
 */
 
 
+// Homepage
 $app->get('/', function() use ($app) {
     if (Auth::check()) {
         $user = Auth::user();
         $news = News::all();
-        return view('index')->withNews($news)->withUser($user);
+        $ships = json_decode(Storage::disk('local')->get('api_ships.json'), false)->results;
+        $maps = json_decode(Storage::disk('local')->get('api_maps.json'), false)->results;
+        $equips = json_decode(Storage::disk('local')->get('api_equips.json'), false)->results;
+        return view('index')->withNews($news)->withUser($user)->withShips($ships)->withMaps($maps)->withEquips($equips);
     }
     return redirect('/login');
 });
 
 
+// Login
 $app->get('/login', function () use ($app) {
     return view('login');
 });
@@ -34,11 +41,25 @@ $app->get('/login', function () use ($app) {
 $app->post('/login', function(Request $request) use ($app) {
     $credentials = $request->only('email', 'password');
     if (Auth::attempt($credentials, true)) {
-        return ['result'=>'success'];
+        return redirect('/');
     }
     return redirect('/');
 });
 
+$app->get('/logout', function(){
+    Auth::logout();
+    return redirect('/login');
+});
+
+// Meta
+$app->get('/meta', function() {
+    $ships = json_decode(Storage::disk('local')->get('api_ships.json'), false)->results;
+    $maps = json_decode(Storage::disk('local')->get('api_maps.json'), false)->results;
+    $equips = json_decode(Storage::disk('local')->get('api_equips.json'), false)->results;
+    return view('meta')->withShips($ships)->withMaps($maps)->withEquips($equips);
+});
+
+// API
 $app->get('/news', function() {
     $news = News::all();
     return response()->json($news);
@@ -50,25 +71,29 @@ $app->post('/news', function(Request $request) {
    }
    $rules = [
        'title' => 'required|max:256',
-       'ship' => 'max:1024',
-       'quest' => 'max:1024',
+       'ship' => 'array',
+       'quest' => 'array',
        'content' => 'max:1024',
-       'equip' => 'max:1024'
+       'equip' => 'array'
    ];
    $validator = Validator::make($request->all(), $rules);
    if ($validator->fails()) {
        return redirect('/')->withErrors($validator);
    }
+   $ship = $request->input('ship') ? join(',',$request->input('ship')) : '';
+   $quest = $request->input('quest') ? join(',',$request->input('quest')) : '';
+   $equip = $request->input('equip') ? join(',',$request->input('equip')) : '';
    News::create([
       'title' => $request->input('title'),
-      'ship' => $request->input('ship'),
-      'equip' => $request->input('equip'),
-      'quest' => $request->input('quest'),
+      'ship' => $ship,
+      'equip' => $equip,
+      'quest' => $quest,
       'content' => $request->input('content')
    ]);
    $successMessage = '新闻创建成功';
    return redirect('/')->withSuccess($successMessage);
 });
+
 
 $app->post('/news/{id}', function($id, Request $request) {
     if (!Auth::check()) {
@@ -76,21 +101,24 @@ $app->post('/news/{id}', function($id, Request $request) {
     }
     $rules = [
         'title' => 'required|max:256',
-        'ship' => 'max:1024',
-        'quest' => 'max:1024',
+        'ship' => 'array',
+        'quest' => 'array',
         'content' => 'max:1024',
-        'equip' => 'max:1024'
+        'equip' => 'array'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
         return redirect('/')->withErrors($validator);
     }
+    $ship = $request->input('ship') ? join(',',$request->input('ship')) : '';
+    $quest = $request->input('quest') ? join(',',$request->input('quest')) : '';
+    $equip = $request->input('equip') ? join(',',$request->input('equip')) : '';
     $news = News::findOrFail($id);
     $news->fill([
         'title' => $request->input('title'),
-        'ship' => $request->input('ship'),
-        'equip' => $request->input('equip'),
-        'quest' => $request->input('quest'),
+        'ship' => $ship,
+        'equip' => $equip,
+        'quest' => $quest,
         'content' => $request->input('content')
     ]);
     $news->save();

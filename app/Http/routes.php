@@ -46,9 +46,9 @@ $app->get('/login', function () use ($app) {
 $app->post('/login', function(Request $request) use ($app) {
     $credentials = $request->only('email', 'password');
     if (Auth::attempt($credentials, true)) {
-        return redirect('/');
+        return redirect('/panel');
     }
-    return redirect('/panel');
+    return redirect('/login');
 });
 
 $app->get('/logout', function(){

@@ -20,7 +20,12 @@ use Illuminate\Support\Facades\Storage;
 
 
 // Homepage
-$app->get('/', function() use ($app) {
+$app->get('/', function() {
+   return view('link');
+});
+
+
+$app->get('/panel', function() use ($app) {
     if (Auth::check()) {
         $user = Auth::user();
         $news = News::all();
@@ -43,7 +48,7 @@ $app->post('/login', function(Request $request) use ($app) {
     if (Auth::attempt($credentials, true)) {
         return redirect('/');
     }
-    return redirect('/');
+    return redirect('/panel');
 });
 
 $app->get('/logout', function(){

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 
 /*
@@ -140,4 +141,32 @@ $app->delete('/news/{id}', function($id) {
        return redirect('/')->withSuccess('新闻删除成功');
    }
    return response()->withErrors(['新闻删除失败']);
+});
+
+$app->get('/subtitles', function() {
+   if (!Cache::has('subtitles')) {
+       $subtitles = Storage::disk('local')->get('subtitles.json');
+       Cache::put('subtitles', $subtitles, 60);
+   }
+   $subtitles = Cache::get('subtitles');
+   return $subtitles;
+});
+
+$app->get('/subtitles/purge', function() {
+    $subtitles = Storage::disk('local')->get('subtitles.json');
+    Cache::put('subtitles', $subtitles, 60);
+    return 'Purge Success';
+});
+
+$app->get('/subtitles/{id}', function($id) {
+    if (!Cache::has('subtitles')) {
+        $subtitles = Storage::disk('local')->get('subtitles.json');
+        Cache::put('subtitles', $subtitles, 60);
+    }
+    $subtitles = json_decode(Cache::get('subtitles'), true);
+    if (array_key_exists($id, $subtitles)) {
+        return response()->json($subtitles[$id]);
+    } else {
+        return response()->json(['error' => 'Subtitles not found']);
+    }
 });

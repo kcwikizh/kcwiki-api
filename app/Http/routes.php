@@ -145,7 +145,7 @@ $app->delete('/news/{id}', function($id) {
 
 $app->get('/subtitles', function() {
    if (!Cache::has('subtitles')) {
-       $subtitles = Storage::disk('local')->get('subtitles.json');
+       $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
        Cache::put('subtitles', $subtitles, 60);
    }
    $subtitles = Cache::get('subtitles');
@@ -153,17 +153,17 @@ $app->get('/subtitles', function() {
 });
 
 $app->get('/subtitles/purge', function() {
-    $subtitles = Storage::disk('local')->get('subtitles.json');
+    $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
     Cache::put('subtitles', $subtitles, 60);
     return 'Purge Success';
 });
 
 $app->get('/subtitles/{id}', function($id) {
     if (!Cache::has('subtitles')) {
-        $subtitles = Storage::disk('local')->get('subtitles.json');
+        $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
         Cache::put('subtitles', $subtitles, 60);
     }
-    $subtitles = json_decode(Cache::get('subtitles'), true);
+    $subtitles = Cache::get('subtitles');
     if (array_key_exists($id, $subtitles)) {
         return response()->json($subtitles[$id]);
     } else {

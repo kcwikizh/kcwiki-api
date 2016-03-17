@@ -4,9 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
+use App\SubtitleCache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /*
 |--------------------------------------------------------------------------
@@ -144,29 +145,33 @@ $app->delete('/news/{id}', function($id) {
 });
 
 $app->get('/subtitles', function() {
-   if (!Cache::has('subtitles')) {
-       $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
-       Cache::put('subtitles', $subtitles, 60);
-   }
-   $subtitles = Cache::get('subtitles');
-   return $subtitles;
+  $subtitles = SubtitleCache::get();
+  return response()->json($subtitles);
 });
 
 $app->get('/subtitles/purge', function() {
-    $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
-    Cache::put('subtitles', $subtitles, 60);
+    Cache::flush();
     return 'Purge Success';
 });
 
-$app->get('/subtitles/{id}', function($id) {
-    if (!Cache::has('subtitles')) {
-        $subtitles = json_decode(Storage::disk('local')->get('subtitles.json'), true);
-        Cache::put('subtitles', $subtitles, 60);
+$app->get('/subtitles/diff/{version}', function($version) {
+    try {
+        $diff = SubtitleCache::getDiff($version);
+    } catch (FileNotFoundException $e) {
+        return response()->json(['error' => 'Version not found']);
     }
-    $subtitles = Cache::get('subtitles');
+    return response()->json($diff);
+});
+
+$app->get('/subtitles/{id}', function($id) {
+    $subtitles = SubtitleCache::get();
     if (array_key_exists($id, $subtitles)) {
         return response()->json($subtitles[$id]);
     } else {
         return response()->json(['error' => 'Subtitles not found']);
     }
+});
+
+$app->get('/latest', function() {
+   return SubtitleCache::getLatest();
 });

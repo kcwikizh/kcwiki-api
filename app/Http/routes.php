@@ -171,7 +171,3 @@ $app->get('/subtitles/{id}', function($id) {
         return response()->json(['error' => 'Subtitles not found']);
     }
 });
-
-$app->get('/latest', function() {
-   return SubtitleCache::getLatest();
-});

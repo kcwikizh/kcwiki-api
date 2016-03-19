@@ -11,6 +11,18 @@ class SubtitleCache {
         });
     }
 
+    static public function getByShip($id) {
+        $key = self::getLatest() + '-' + $id;
+        return self::remember($key, function() use ($id) {
+            $subtitles = SubtitleCache::get();
+            if (array_key_exists($id, $subtitles)) {
+                return $subtitles[$id];
+            } else {
+                return [];
+            }
+        });
+    }
+
     static public function getDiff($ver='') {
         if (!$ver)
             return ['error'=>'Version not found'];

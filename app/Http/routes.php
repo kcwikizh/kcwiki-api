@@ -149,7 +149,7 @@ $app->get('/subtitles', function() {
   return response()->json($subtitles);
 });
 
-$app->get('/subtitles/purge', function() {
+$app->get('/purge', function() {
     Cache::flush();
     return 'Purge Success';
 });
@@ -166,9 +166,9 @@ $app->get('/subtitles/diff/{version:\d{8}[A-Z]?}', function($version) {
 });
 
 $app->get('/subtitles/{id}', function($id) {
-    $subtitles = SubtitleCache::get();
-    if (array_key_exists($id, $subtitles)) {
-        return response()->json($subtitles[$id]);
+    $subtitles = SubtitleCache::getByShip($id);
+    if ($subtitles) {
+        return $subtitles;
     } else {
         return response()->json(['error' => 'Subtitles not found']);
     }

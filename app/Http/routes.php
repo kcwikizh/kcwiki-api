@@ -154,7 +154,9 @@ $app->get('/subtitles/purge', function() {
     return 'Purge Success';
 });
 
-$app->get('/subtitles/diff/{version}', function($version) {
+$app->get('/subtitles/diff/{version:\d{8}[A-Z]?}', function($version) {
+    if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
+        return response()->json([]);
     try {
         $diff = SubtitleCache::getDiff($version);
     } catch (FileNotFoundException $e) {
@@ -170,4 +172,16 @@ $app->get('/subtitles/{id}', function($id) {
     } else {
         return response()->json(['error' => 'Subtitles not found']);
     }
+});
+
+$app->get('/maintenance/on/{key}', function($key) {
+   if ($key != env('ADMIN_PASSWORD', 'admin')) return 'Oops';
+   Cache::put('maintenance', 'true', 3600);
+   return Cache::get("maintenance");
+});
+
+$app->get('/maintenance/off/{key}', function($key) {
+    if ($key != env('ADMIN_PASSWORD', 'admin')) return 'Oops';
+    Cache::put('maintenance', 'false', 3600);
+    return 'Maintenance Off';
 });

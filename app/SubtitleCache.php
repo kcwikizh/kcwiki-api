@@ -15,6 +15,7 @@ class SubtitleCache {
         if (!$ver)
             return ['error'=>'Version not found'];
         $latest = self::getLatest();
+        if ($latest == $ver) return [];
         $key = $ver.'-'.$latest;
         return self::remember($key, function() use ($ver, $latest) {
             $diff = [];

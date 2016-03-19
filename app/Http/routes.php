@@ -185,3 +185,16 @@ $app->get('/maintenance/off/{key}', function($key) {
     Cache::put('maintenance', 'false', 3600);
     return 'Maintenance Off';
 });
+
+$app->get('/tweet/{count:\d{1,3}}', function($count) {
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, "http://dev.kcwiki.moe/JKancolle/tweet.do?format={gzip}&count=$count");
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    $result = curl_exec($curl);
+    if ($result) {
+        return $result;
+    } else {
+        return response()->json(['error' => 'Getting tweets failed.']);
+    }
+});

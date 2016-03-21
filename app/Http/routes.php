@@ -190,8 +190,7 @@ $app->get('/maintenance/off/{key}', function($key) {
 $app->get('/tweet/{count:\d{1,3}}', function($count) {
     $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?count=$count");
     if ($result) {
-        return response($result)->header(['Content-Type' => 'application/json',
-            'Access-Control-Allow-Origin' => '*']);
+        return response($result)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     } else {
         return response()->json(['error' => 'Getting tweets failed.']);
     }
@@ -200,8 +199,7 @@ $app->get('/tweet/{count:\d{1,3}}', function($count) {
 $app->get('/tweet/{format}/{count:\d{1,3}}/', function($format, $count) {
     $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?format=$format&count=$count");
     if ($result) {
-        return response($result)->header(['Content-Type' => 'application/json',
-            'Access-Control-Allow-Origin' => '*']);
+        return response($result)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     } else {
         return response()->json(['error' => 'Getting tweets failed.']);
     }

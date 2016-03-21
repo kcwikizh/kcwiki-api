@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
+use App\Util;
 use App\SubtitleCache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -154,7 +155,7 @@ $app->get('/purge', function() {
     return 'Purge Success';
 });
 
-$app->get('/subtitles/diff/{version:\d{8}[A-Z]?}', function($version) {
+$app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}', function($version) {
     if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
         return response()->json([]);
     try {
@@ -187,14 +188,20 @@ $app->get('/maintenance/off/{key}', function($key) {
 });
 
 $app->get('/tweet/{count:\d{1,3}}', function($count) {
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, "http://dev.kcwiki.moe/JKancolle/tweet.do?format={gzip}&count=$count");
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 0);
-    $result = curl_exec($curl);
+    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?count=$count");
     if ($result) {
-        return $result;
+        return response($result)->header('Content-Type', 'application/json');
     } else {
         return response()->json(['error' => 'Getting tweets failed.']);
     }
 });
+
+$app->get('/tweet/{format}/{count:\d{1,3}}/', function($format, $count) {
+    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?format={{$format}}&count=$count");
+    if ($result) {
+        return response($result)->header('Content-Type', 'application/json');
+    } else {
+        return response()->json(['error' => 'Getting tweets failed.']);
+    }
+});
+

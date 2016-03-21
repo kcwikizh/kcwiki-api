@@ -197,7 +197,7 @@ $app->get('/tweet/{count:\d{1,3}}', function($count) {
 });
 
 $app->get('/tweet/{format}/{count:\d{1,3}}/', function($format, $count) {
-    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?format={{$format}}&count=$count");
+    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?format=$format&count=$count");
     if ($result) {
         return response($result)->header('Content-Type', 'application/json');
     } else {

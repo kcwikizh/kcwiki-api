@@ -155,7 +155,7 @@ $app->get('/purge', function() {
     return 'Purge Success';
 });
 
-$app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}', function($version) {
+$app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
         return response()->json([]);
     try {

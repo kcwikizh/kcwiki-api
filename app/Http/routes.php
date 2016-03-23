@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
 use App\Util;
+use App\Tyku;
 use App\SubtitleCache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
@@ -145,6 +146,7 @@ $app->delete('/news/{id}', function($id) {
    return response()->withErrors(['新闻删除失败']);
 });
 
+// Subtitles API
 $app->get('/subtitles', function() {
   $subtitles = SubtitleCache::get();
   return response()->json($subtitles);
@@ -205,3 +207,25 @@ $app->get('/tweet/{format}/{count:\d{1,3}}/', function($format, $count) {
     }
 });
 
+// Reporter API
+$app->post('/tyku', ['middleware' => 'cache',function(Request $request){
+    $rules = [
+        'mapAreaId' => 'required|digits_between:1,3',
+        'mapId' => 'required|digits_between:1,3',
+        'cellId' => 'required|digits_between:1,3',
+        'tyku' => 'required|digits_between:1,4',
+        'rank' => 'required|size:1'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
+    }
+    Tyku::create([
+       'mapAreaId' => $request->input('mapAreaId'),
+       'mapId' => $request->input('mapId'),
+       'cellId' => $request->input('cellId'),
+       'tyku' => $request->input('tyku'),
+       'rank' => $request->input('rank')
+    ]);
+    return response()->json(['result'=>'success']);
+}]);

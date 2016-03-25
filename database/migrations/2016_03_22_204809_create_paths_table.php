@@ -16,15 +16,15 @@ class CreatePathsTable extends Migration
             $table->increments('id');
             $table->integer('mapAreaId');
             $table->integer('mapId');
-            $table->string('cellList', 120);
-            $table->string('fleet', 120);
+            $table->string('path', 120);
+            $table->string('decks', 120);
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
+ *
      * @return void
      */
     public function down()

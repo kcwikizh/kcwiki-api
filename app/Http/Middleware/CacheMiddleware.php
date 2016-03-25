@@ -21,7 +21,7 @@ class CacheMiddleware
         if ($count > 5) {
             return response()->json(['result'=>'hit']);
         }
-        Cache::put($hash, $count+1);
+        Cache::forever($hash, $count+1);
         return $next($request);
     }
 }

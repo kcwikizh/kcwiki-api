@@ -17,6 +17,7 @@ class CreateMapeventsTable extends Migration
             $table->integer('mapAreaId');
             $table->integer('mapId');
             $table->integer('cellId');
+            $table->integer('eventType');
             $table->integer('eventId');
             $table->integer('count');
             $table->boolean('dantan');

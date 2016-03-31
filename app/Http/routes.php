@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\News;
-use App\Util;
 use App\SubtitleCache;
+use PHPHtmlParser\Dom;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -190,18 +190,24 @@ $app->get('/maintenance/off/{key}', function($key) {
 });
 
 $app->get('/tweet/{count:\d{1,3}}', function($count) {
-    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?count=$count");
-    if ($result) {
-        return response($result)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
-    } else {
-        return response()->json(['error' => 'Getting tweets failed.']);
-    }
-});
+    $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
+    if ($rep) {
+        $result = json_decode($rep, true);
+        $posts = $result['posts'];
 
-$app->get('/tweet/{format}/{count:\d{1,3}}/', function($format, $count) {
-    $result = Util::curl_get("http://dev.kcwiki.moe/JKancolle/tweet.do?format=$format&count=$count");
-    if ($result) {
-        return response($result)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
+        $output = [];
+        foreach ($posts as $post) {
+            $dom = new Dom;
+            $dom->load($post['content']);
+            $p = $dom->find('p');
+            $plength = count($p);
+            $new_post = [];
+            $new_post['jp'] = $p[0]->outerHtml;
+            $new_post['zh'] = $plength > 1 ? $p[$plength-1]->outerHtml : '';
+            $new_post['date'] = $post['date'];
+            array_push($output, $new_post);
+        }
+        return response($output)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     } else {
         return response()->json(['error' => 'Getting tweets failed.']);
     }

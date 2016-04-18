@@ -168,6 +168,24 @@ $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     return response()->json($diff);
 });
 
+$app->get('/subtitles/jp', function() {
+    $subtitles = SubtitleCache::getI18n();
+    if ($subtitles) {
+        return $subtitles;
+    } else {
+        return response()->json(['error' => 'Subtitles not found']);
+    }
+});
+
+$app->get('/subtitles/jp/{id}', function($id) {
+    $subtitles = SubtitleCache::getI18nByShip($id);
+    if ($subtitles) {
+        return $subtitles;
+    } else {
+        return response()->json(['error' => 'Subtitles not found']);
+    }
+});
+
 $app->get('/subtitles/{id}', function($id) {
     $subtitles = SubtitleCache::getByShip($id);
     if ($subtitles) {

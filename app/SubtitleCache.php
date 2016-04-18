@@ -11,6 +11,24 @@ class SubtitleCache {
         });
     }
 
+    static public function getI18n($lang='JP') {
+        return self::remember($lang, function() use ($lang) {
+            return json_decode(Storage::disk('local')->get("subtitles$lang.json"), true);
+        });
+    }
+
+    static public function getI18nByShip($id, $lang='JP') {
+        $key = $lang + $id;
+        return self::remember($key, function() use ($id, $lang) {
+           $subtitles = SubtitleCache::getI18n($lang);
+           if (array_key_exists($id, $subtitles)) {
+               return $subtitles[$id];
+           } else {
+               return [];
+           }
+        });
+    }
+
     static public function getByShip($id) {
         $key = self::getLatest() + '-' + $id;
         return self::remember($key, function() use ($id) {

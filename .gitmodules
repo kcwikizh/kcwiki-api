@@ -1,0 +1,3 @@
+[submodule "storage/app/subtitles"]
+	path = storage/app/subtitles
+	url = https://github.com/kcwikizh/kcwiki-subtitle-archives.git

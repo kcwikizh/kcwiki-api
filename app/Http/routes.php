@@ -221,7 +221,10 @@ $app->get('/tweet/{count:\d{1,3}}', function($count) {
             $plength = count($p);
             $new_post = [];
             $new_post['jp'] = $p[0]->outerHtml;
-            $new_post['zh'] = $plength > 1 ? $p[$plength-1]->outerHtml : '';
+            $new_post['zh'] = '';
+            for ($i=1; $i < $plength; $i++) {
+                $new_post['zh'] .= $p[$i]->outerHtml;
+            }
             $new_post['date'] = $post['date'];
             array_push($output, $new_post);
         }

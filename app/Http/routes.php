@@ -167,7 +167,7 @@ $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     try {
         $diff = SubtitleCache::getDiff($version);
     } catch (FileNotFoundException $e) {
-        return response()->json(['error' => 'Version not found']);
+        return response()->json(['result' => 'error', 'reason' => 'Version not found']);
     }
     return response()->json($diff);
 });
@@ -178,7 +178,7 @@ $app->get('/subtitles/jp/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     try {
         $diff = SubtitleCache::getDiff($version, 'jp');
     } catch (FileNotFoundException $e) {
-        return response()->json(['error' => 'Version not found']);
+        return response()->json(['result' => 'error', 'reason' => 'Version not found']);
     }
     return response()->json($diff);
 });
@@ -188,7 +188,7 @@ $app->get('/subtitles/jp', function() {
     if ($subtitles) {
         return $subtitles;
     } else {
-        return response()->json(['error' => 'Subtitles not found']);
+        return response()->json(['result' => 'error', 'reason' => 'Subtitles not found']);
     }
 });
 
@@ -197,7 +197,7 @@ $app->get('/subtitles/jp/{id}', function($id) {
     if ($subtitles) {
         return $subtitles;
     } else {
-        return response()->json(['error' => 'Subtitles not found']);
+        return response()->json(['result' => 'error', 'reason' => 'Subtitles not found']);
     }
 });
 
@@ -206,7 +206,7 @@ $app->get('/subtitles/{id}', function($id) {
     if ($subtitles) {
         return $subtitles;
     } else {
-        return response()->json(['error' => 'Subtitles not found']);
+        return response()->json(['result' => 'error', 'reason' => 'Subtitles not found']);
     }
 });
 
@@ -245,7 +245,7 @@ $app->get('/tweet/{count:\d{1,3}}', function($count) {
         }
         return response($output)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     } else {
-        return response()->json(['error' => 'Getting tweets failed.']);
+        return response()->json(['result' => 'error', 'reason' => 'Getting tweets failed.']);
     }
 });
 

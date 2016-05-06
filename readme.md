@@ -1,21 +1,50 @@
-## Lumen PHP Framework
+# Kcwiki API 服务
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+Powered By Lumen
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Installation
 
-## Official Documentation
+安装PHP依赖库：
 
-Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+	composer install
 
-## Security Vulnerabilities
+## Configuration
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+### .env
 
-### License
+通过在根目录创建`.env`文件进行PHP应用的基本设置
 
-The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+`.env`配置文件示例：
+
+
+	APP_ENV=local
+	APP_DEBUG=true
+	APP_KEY=somesecretkey
+	APP_HOST=http://api.kcwiki.moe
+	
+	AUTH_DRIVER=eloquent
+	AUTH_MODEL=\App\User
+	AUTH_TABLE=users
+	
+	DB_CONNECTION=sqlite
+	CACHE_DRIVER=file
+	SESSION_DRIVER=file
+	
+	ADMIN_USERNAME=admin@xxx.xxx
+	ADMIN_PASSWORD=somepassword
+
+有关配置文件的说明请[参考](https://lumen.laravel.com/docs/5.2/configuration#environment-configuration)
+
+### Writable folder
+
+需要将`storage`文件夹赋予写权限
+
+	chmod -R a+w storage/
+
+### Migrations
+
+在`.env`设置好数据库后，使用`php artisan migrate`来迁移数据库
+
+	php artisan migrate
+
+迁移的其他命令行选项请[参考](http://laravel.com/docs/migrations)

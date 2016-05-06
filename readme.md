@@ -2,15 +2,15 @@
 
 Powered By Lumen
 
-## Installation
+## 1. Installation
 
 安装PHP依赖库：
 
 	composer install
 
-## Configuration
+## 2. Configuration
 
-### .env
+### 2.1 .env
 
 通过在根目录创建`.env`文件进行PHP应用的基本设置
 
@@ -35,13 +35,13 @@ Powered By Lumen
 
 有关配置文件的说明请[参考](https://lumen.laravel.com/docs/5.2/configuration#environment-configuration)
 
-### Writable folder
+### 2.2 Writable folder
 
 需要将`storage`文件夹赋予写权限
 
 	chmod -R a+w storage/
 
-### Migrations
+### 2.3 Migrations
 
 在`.env`设置好数据库后，使用`php artisan migrate`来迁移数据库
 
@@ -50,9 +50,9 @@ Powered By Lumen
 迁移的其他命令行选项请[参考](http://laravel.com/docs/migrations)
 
 
-## API Doc
+## 3. API Doc
 
-### Error response
+### 3.1 Error response
 
 API调用出现错误时的返回格式：
 
@@ -63,7 +63,7 @@ API调用出现错误时的返回格式：
 
 **注：如果调用成功，返回结果并不一定带有result:success键值对**
 
-### Subtitle
+### 3.2 Subtitle
 
 	http://api.kcwiki.moe/subtitles
 
@@ -78,7 +78,7 @@ API调用出现错误时的返回格式：
 		"version": "20160317"				// 数据版本号
 	}
 
-#### Version
+#### 3.2.1 Version
 
 	http://api.kcwiki.moe/subtitles/version
 
@@ -86,7 +86,7 @@ API调用出现错误时的返回格式：
 
 	{ "version": "20160317" }
 	
-#### ShipID
+#### 3.2.2 ShipID
 
 根据舰娘编号(`api_id`)来获取字幕数据
 	
@@ -96,7 +96,7 @@ API调用出现错误时的返回格式：
 
 返回格式：
 
-#### Diff
+#### 3.2.3 Diff
 
 返回目标版本与最新版本的差分结果（POI字幕插件更新数据用）
 
@@ -106,7 +106,7 @@ API调用出现错误时的返回格式：
 
 返回格式同`/subtitles`
 
-#### I18n
+#### 3.2.4 I18n
 
 字幕数据支持多语言，其接口如下（每个接口含义参考前述）：
 
@@ -118,7 +118,7 @@ API调用出现错误时的返回格式：
 
 返回格式与简体中文的返回格式相同
 
-### Twitter
+### 3.3 Twitter
 
 返回舰娘官推数据（带翻译）
 
@@ -137,11 +137,11 @@ API调用出现错误时的返回格式：
 		...
 	}
 
-### Report API
+### 3.4 Report API
 
 Kcwiki的poi报告插件的上传数据API，[详情见](https://github.com/kcwikizh/kcwiki-report)
 
-### Maintenance
+### 3.5 Maintenance
 
 开启/关闭维护模式，若开启，则字幕差分更新（`/subtitles/diff`）接口返回空值
 

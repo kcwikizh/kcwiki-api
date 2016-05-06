@@ -2,6 +2,28 @@
 
 Powered By Lumen
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [1. Installation](#1-installation)
+- [2. Configuration](#2-configuration)
+  - [2.1 .env](#21-env)
+  - [2.2 Writable folder](#22-writable-folder)
+  - [2.3 Migrations](#23-migrations)
+- [3. API Doc](#3-api-doc)
+  - [3.1 Error response](#31-error-response)
+  - [3.2 Subtitle](#32-subtitle)
+    - [3.2.1 Version](#321-version)
+    - [3.2.2 ShipID](#322-shipid)
+    - [3.2.3 Diff](#323-diff)
+    - [3.2.4 I18n](#324-i18n)
+  - [3.3 Twitter](#33-twitter)
+  - [3.4 Report API](#34-report-api)
+  - [3.5 Maintenance](#35-maintenance)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## 1. Installation
 
 安装PHP依赖库：

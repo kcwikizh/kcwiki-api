@@ -256,7 +256,8 @@ $app->post('/tyku', ['middleware' => 'cache',function(Request $request){
         'mapId' => 'required|digits_between:1,3',
         'cellId' => 'required|digits_between:1,3',
         'tyku' => 'required|digits_between:1,4',
-        'rank' => 'required|size:1'
+        'rank' => 'required|size:1',
+        'version' => 'required'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {

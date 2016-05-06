@@ -157,6 +157,10 @@ $app->get('/purge', function() {
     return 'Purge Success';
 });
 
+$app->get('/subtitles/version', function() {
+   return response()->json(['version' => SubtitleCache::getLatest()]);
+});
+
 $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
         return response()->json([]);
@@ -168,8 +172,19 @@ $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     return response()->json($diff);
 });
 
+$app->get('/subtitles/jp/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
+    if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
+        return response()->json([]);
+    try {
+        $diff = SubtitleCache::getDiff($version, 'jp');
+    } catch (FileNotFoundException $e) {
+        return response()->json(['error' => 'Version not found']);
+    }
+    return response()->json($diff);
+});
+
 $app->get('/subtitles/jp', function() {
-    $subtitles = SubtitleCache::getI18n();
+    $subtitles = SubtitleCache::get('latest', 'jp');
     if ($subtitles) {
         return $subtitles;
     } else {
@@ -178,7 +193,7 @@ $app->get('/subtitles/jp', function() {
 });
 
 $app->get('/subtitles/jp/{id}', function($id) {
-    $subtitles = SubtitleCache::getI18nByShip($id);
+    $subtitles = SubtitleCache::getByShip($id, 'jp');
     if ($subtitles) {
         return $subtitles;
     } else {

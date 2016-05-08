@@ -43,16 +43,19 @@ Powered By Lumen
 	APP_DEBUG=true
 	APP_KEY=somesecretkey
 	APP_HOST=http://api.kcwiki.moe
-	
+
 	AUTH_DRIVER=eloquent
 	AUTH_MODEL=\App\User
 	AUTH_TABLE=users
-	
-	DB_CONNECTION=sqlite
-	CACHE_DRIVER=file
+
+	DB_CONNECTION=mysql
+	DB_DATABASE=xxx
+	DB_USERNAME=xxx
+	DB_PASSWORD=xxx
+	CACHE_DRIVER=redis
 	SESSION_DRIVER=file
-	
-	ADMIN_USERNAME=admin@xxx.xxx
+
+	ADMIN_USERNAME=foobar@kcwiki.moe
 	ADMIN_PASSWORD=somepassword
 
 有关配置文件的说明请[参考](https://lumen.laravel.com/docs/5.2/configuration#environment-configuration)

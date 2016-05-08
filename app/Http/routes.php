@@ -223,11 +223,12 @@ $app->get('/maintenance/off/{key}', function($key) {
 });
 
 $app->get('/tweet/{count:\d{1,3}}', function($count) {
+    $key = "tweet.$count";
+    if (Cache::has($key)) return Cache::get($key);
     $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
     if ($rep) {
         $result = json_decode($rep, true);
         $posts = $result['posts'];
-
         $output = [];
         foreach ($posts as $post) {
             $dom = new Dom;
@@ -243,6 +244,7 @@ $app->get('/tweet/{count:\d{1,3}}', function($count) {
             $new_post['date'] = $post['date'];
             array_push($output, $new_post);
         }
+        Cache::put($key, $output, 5);
         return response($output)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     } else {
         return response()->json(['result' => 'error', 'reason' => 'Getting tweets failed.']);

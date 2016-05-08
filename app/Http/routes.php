@@ -224,7 +224,7 @@ $app->get('/maintenance/off/{key}', function($key) {
 
 $app->get('/tweet/{count:\d{1,3}}', function($count) {
     $key = "tweet.$count";
-    if (Cache::has($key)) return Cache::get($key);
+    if (Cache::has($key)) return response(Cache::get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
     if ($rep) {
         $result = json_decode($rep, true);

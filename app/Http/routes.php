@@ -413,3 +413,20 @@ $app->post('/mapEvent', ['middleware' => 'cache', function(Request $request) {
     ]);
     return response()->json(['result' => 'success']);
 }]);
+
+// Api Start2
+$app->post('/start2/upload', function(Request $request) {
+    $rules = [
+        'password' => 'required|alpha_dash|between:5,50',
+        'data' => 'required|json'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
+    }
+    $inputs = $request->all();
+    if (env('ADMIN_PASSWORD', 'admin') !== $inputs['password'])
+        return response()->json(['result' => 'error', 'reason' => 'Incorrect password']);
+    Storage::disk('local')->put('api_start2.json', $inputs['data']);
+    return response()->json(['result' => 'success']);
+});

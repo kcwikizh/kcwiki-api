@@ -158,7 +158,7 @@ $app->get('/purge', function() {
 });
 
 $app->get('/subtitles/version', function() {
-   return response()->json(['version' => SubtitleCache::getLatest()]);
+   return response()->json(['version' => SubtitleCache::getLatest()])->header('Access-Control-Allow-Origin', '*');
 });
 
 $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {

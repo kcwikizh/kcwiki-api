@@ -1,7 +1,4 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\SubtitleCache;

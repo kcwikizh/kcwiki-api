@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use PHPHtmlParser\Dom;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,15 @@ $app->post('/start2/upload', function(Request $request) {
         return response()->json(['result' => 'error', 'reason' => 'Incorrect password']);
     Storage::disk('local')->put('api_start2.json', $inputs['data']);
     return response()->json(['result' => 'success']);
+});
+
+$app->get('/start2', function() {
+   try {
+      $data = Storage::disk('local')->get('api_start2.json');
+      return response($data)->header('Content-Type', 'application/json');
+   } catch (FileNotFoundException $e) {
+      return response()->json(['result' => 'error', 'reason' => 'api_start2.json not found in server']);
+   }
 });
 
 include_once('Routers/NewsRouter.php');

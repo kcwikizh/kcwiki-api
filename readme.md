@@ -53,7 +53,7 @@ Powered By Lumen
 	DB_USERNAME=xxx
 	DB_PASSWORD=xxx
 	CACHE_DRIVER=redis
-	SESSION_DRIVER=file
+	SESSION_DRIVER=redis
 
 	ADMIN_USERNAME=foobar@kcwiki.moe
 	ADMIN_PASSWORD=somepassword

@@ -2,9 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use PHPHtmlParser\Dom;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /*
@@ -54,34 +52,8 @@ $app->get('/logout', function(){
 });
 
 // Tweet
-$app->get('/tweet/{count:\d{1,3}}', function($count) {
-    $key = "tweet.$count";
-    if (Cache::has($key)) return response(Cache::get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
-    $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
-    if ($rep) {
-        $result = json_decode($rep, true);
-        $posts = $result['posts'];
-        $output = [];
-        foreach ($posts as $post) {
-            $dom = new Dom;
-            $dom->load($post['content']);
-            $p = $dom->find('p');
-            $plength = count($p);
-            $new_post = [];
-            $new_post['jp'] = $p[0]->outerHtml;
-            $new_post['zh'] = '';
-            for ($i=1; $i < $plength; $i++) {
-                $new_post['zh'] .= $p[$i]->outerHtml;
-            }
-            $new_post['date'] = $post['date'];
-            array_push($output, $new_post);
-        }
-        Cache::put($key, $output, 5);
-        return response($output)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
-    } else {
-        return response()->json(['result' => 'error', 'reason' => 'Getting tweets failed.']);
-    }
-});
+$app->get('/tweet/{count:\d{1,3}}', ['uses' => 'TweetController@getHtml']);
+$app->get('/tweet/plain/{count:\d{1,3}}', ['uses' => 'TweetController@getPlain']);
 
 // Api Start2
 $app->post('/start2/upload', function(Request $request) {

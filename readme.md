@@ -19,8 +19,10 @@ Powered By Lumen
     - [3.2.3 Diff](#323-diff)
     - [3.2.4 I18n](#324-i18n)
   - [3.3 Twitter](#33-twitter)
-  - [3.4 Report API](#34-report-api)
-  - [3.5 Maintenance](#35-maintenance)
+    - [3.3.1 Plain Text](#331-plain-text)
+  - [3.4 Start2 Data](#34-start2-data)
+  - [3.5 Report API](#35-report-api)
+  - [3.6 Maintenance Mode](#36-maintenance-mode)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -162,11 +164,25 @@ API调用出现错误时的返回格式：
 		...
 	}
 
-### 3.4 Report API
+#### 3.3.1 Plain Text
+
+默认官推的输出格式为HTML，如果想要提取后的纯文本，可以请求：
+
+	http://api.kcwiki.moe/tweet/plain/{count}
+
+返回格式与之前相同
+
+### 3.4 Start2 Data
+
+返回`api_start2.json`的原始数据
+
+	http://api.kcwiki.moe/start2
+
+### 3.5 Report API
 
 Kcwiki的poi报告插件的上传数据API，[详情见](https://github.com/kcwikizh/kcwiki-report)
 
-### 3.5 Maintenance
+### 3.6 Maintenance Mode
 
 开启/关闭维护模式，若开启，则字幕差分更新（`/subtitles/diff`）接口返回空值
 

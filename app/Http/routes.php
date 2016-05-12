@@ -81,6 +81,7 @@ $app->get('/start2', function() {
    }
 });
 
-include_once('Routers/NewsRouter.php');
-include_once('Routers/SubtitleRouter.php');
-include_once('Routers/ReportRouter.php');
+$router_files = scandir(dirname(__FILE__).'/Routers');
+foreach ($router_files as $i => $file)
+    if (strpos($file, '.php') > 0)
+        include_once("Routers/$file");

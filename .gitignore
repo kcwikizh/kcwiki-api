@@ -3,6 +3,5 @@
 .idea
 .DS_STORE
 /database/database.sqlite
-/storage/app/subtitles/*
-/storage/app/*.json
+/storage/app/
 composer.lock

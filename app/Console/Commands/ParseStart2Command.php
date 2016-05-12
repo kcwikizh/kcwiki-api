@@ -86,7 +86,7 @@ class ParseStart2 extends Command
         $this->update($kcdata, $start2shipgraph, $this->ship_graph_map);
         $this->updateInKey($kcdata, $start2shipgraph, $this->ship_graph_detailed_map, 'graph');
         $kcdata = $this->toList($kcdata);
-        Storage::disk('local')->put('kcdata.json', json_encode($kcdata));
+        Storage::disk('local')->put('ship/all.json', json_encode($kcdata));
         $this->info('Completed.');
     }
 

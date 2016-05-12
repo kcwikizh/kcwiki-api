@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cache;
 use PHPHtmlParser\Dom;
-use Sunra\PhpSimple\HtmlDomParser;
 
 class TweetController extends BaseController
 {
@@ -41,8 +40,8 @@ class TweetController extends BaseController
                 }
                 $new_post['date'] = $post['date'];
                 if ($option == 'plain') {
-                    $new_post['zh'] = HtmlDomParser::str_get_html($new_post['zh'])->plaintext;
-                    $new_post['jp'] =  HtmlDomParser::str_get_html($new_post['jp'])->plaintext;
+                    $new_post['zh'] = strip_tags($new_post['zh']);
+                    $new_post['jp'] = strip_tags($new_post['jp']);
                 }
                 array_push($output, $new_post);
             }

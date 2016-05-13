@@ -105,6 +105,8 @@ class ParseStart2 extends Command
             if (array_key_exists('id', $ship)) {
                 $id = $ship['id'];
                 Storage::disk('local')->put("ship/detailed/$id.json", json_encode($ship));
+                if (!array_key_exists('name', $ship) || count($ship['name']) < 1)
+                    continue;
                 $common = [];
                 foreach($this->ship_common_keys as $j => $key)
                     if (array_key_exists($key, $ship))

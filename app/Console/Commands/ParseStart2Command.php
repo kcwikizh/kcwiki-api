@@ -94,13 +94,34 @@ class ParseStart2 extends Command
         foreach ($kcdata as $i => $ship)
             if (array_key_exists('stype', $ship) && $ship['stype'] > 0) {
                 $id = $ship['stype'];
-                echo "{$ship['id']} $id  {$start2shiptype[$id-1]['api_name']}  {$this->ship_type_chinese[$id-1]}\n";
                 $kcdata[$i]['stype_name'] = $start2shiptype[$id - 1]['api_name'];
                 $kcdata[$i]['stype_name_chinese'] = $this->ship_type_chinese[$id - 1];
             }
         Storage::disk('local')->put('ship/detailed/all.json', json_encode($kcdata));
-        $common_lists = [];
+        // extract ship filename
+        $filename_list = [];
+        foreach ($kcdata as $i => $ship)
+            if (array_key_exists('filename', $ship)) {
+                $filename = [];
+                $filename['filename'] = $ship['filename'];
+                $filename['file_version'] = $ship['file_version'];
+                $id = $ship['id'];
+                Storage::disk('local')->put("ship/filename/$id.json", json_encode($filename));
+                array_push($filename_list, $filename);
+            }
+        Storage::disk('local')->put('ship/filename/all.json', json_encode($filename_list));
+        // extract ship stats
+        $stats_list = [];
+        foreach ($kcdata as $i => $ship)
+            if (array_key_exists('stats', $ship) && array_key_exists('name', $ship) && count($ship['name']) > 0) {
+                $stats = $ship['stats'];
+                $id = $ship['id'];
+                Storage::disk('local')->put("ship/stats/$id.json", json_encode($stats));
+                array_push($stats_list, $stats);
+            }
+        Storage::disk('local')->put('ship/stats/all.json', json_encode($filename_list));
         // extract common use data from the previous results
+        $common_lists = [];
         foreach ($kcdata as $i => $ship)
             if (array_key_exists('id', $ship)) {
                 $id = $ship['id'];

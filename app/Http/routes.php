@@ -3,6 +3,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 /*
@@ -69,6 +71,10 @@ $app->post('/start2/upload', function(Request $request) {
     if (env('ADMIN_PASSWORD', 'admin') !== $inputs['password'])
         return response()->json(['result' => 'error', 'reason' => 'Incorrect password']);
     Storage::disk('local')->put('api_start2.json', $inputs['data']);
+    Queue::push(function ($job) {
+        Artisan::call('parse:start2');
+        $job->delete();
+    });
     return response()->json(['result' => 'success']);
 });
 
@@ -81,6 +87,7 @@ $app->get('/start2', function() {
    }
 });
 
+// Auto include router files
 $router_files = scandir(dirname(__FILE__).'/Routers');
 foreach ($router_files as $i => $file)
     if (strpos($file, '.php') > 0)

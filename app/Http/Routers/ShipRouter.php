@@ -42,6 +42,11 @@ $app->get('/ship/stats/{id:\d{1,3}}', ['middleware' => 'cache', function($id) {
     return response($raw);
 }]);
 
+$app->get('/ships/type', ['middleware' => 'cache', function() {
+    $raw = Storage::disk('local')->get("ship/type/all.json");
+    return response($raw);
+}]);
+
 $app->get('/ship/detail/{name:.{1,50}}', ['middleware' => 'cache', function($name) {
     $ships = json_decode(SubtitleCache::remember('ships/detail', function() { return Storage::disk('local')->get('ship/detailed/all.json');}), true);
     $name = urldecode($name);

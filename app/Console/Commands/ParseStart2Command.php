@@ -80,7 +80,7 @@ class ParseStart2 extends Command
         } catch (FileNotFoundException $e) {
             $this->error('api_start2.json not found.');
         }
-        $this->info('Parsing...');
+        $this->info('Parsing ship data...');
         $start2ship = $this->sort($start2data['api_mst_ship'], 'api_id');
         $start2shipgraph = $this->sort($start2data['api_mst_shipgraph'], 'api_id');
         $start2shiptype = $start2data['api_mst_stype'];
@@ -136,6 +136,18 @@ class ParseStart2 extends Command
                 Storage::disk('local')->put("ship/$id.json", json_encode($common));
             }
         Storage::disk('local')->put('ship/all.json', json_encode($common_lists));
+        // extract ship types
+        $shiptypes = [];
+        foreach ($start2shiptype as $i => $type) {
+            $shiptype = [];
+            foreach($type as $key => $value) {
+                $dst_key = substr($key, 4);
+                $shiptype[$dst_key] = $value;
+            }
+            array_push($shiptypes, $shiptype);
+        }
+        Storage::disk('local')->put('ship/type/all.json', json_encode($shiptypes));
+
         $this->info('Completed.');
     }
 

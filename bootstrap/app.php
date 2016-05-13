@@ -64,6 +64,7 @@ $app->singleton(
  ]);
 
  $app->routeMiddleware([
+      'report-cache' => 'App\Http\Middleware\ReportCacheMiddleware',
       'cache' => 'App\Http\Middleware\CacheMiddleware'
  ]);
 

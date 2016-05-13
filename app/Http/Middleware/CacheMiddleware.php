@@ -10,18 +10,21 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class CacheMiddleware
 {
     public function handle($request, Closure $next)
     {
-        $input = $request->all();
-        $hash = md5(json_encode($input));
-        $count = Cache::get($hash, 0);
-        if ($count > 5) {
-            return response()->json(['result'=>'hit']);
+        $uri = $request->path();
+        if (Cache::has($uri))
+            return response(Cache::get($uri))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
+        try {
+            $response = $next($request);
+            Cache::forever($uri, $response->getContent());
+        } catch (FileNotFoundException $e) {
+            $response = response()->json(['result'=>'error', 'reason'=>'data not found.']);
         }
-        Cache::forever($hash, $count+1);
-        return $next($request);
+        return $response->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
     }
 }

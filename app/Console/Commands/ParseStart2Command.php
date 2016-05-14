@@ -212,6 +212,7 @@ class ParseStart2 extends Command
                 'character' => "/kcs/resources/image/slotitem/item_character/{$id}.png"
             ];
             $slotitem_common['type'] = $slotitem['type'][2];
+            $slotitem_common['type_name'] = $slottypes[$slotitem_common['type'] - 1]['name'];
             Storage::disk('local')->put("slotitem/$id.json", json_encode($slotitem_common));
             Storage::disk('local')->put("slotitem/detail/$id.json", json_encode($slotitem));
             array_push($slotitems_common, $slotitem_common);

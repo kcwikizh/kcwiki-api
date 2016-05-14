@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class ParseStart2 extends Command
@@ -70,6 +71,21 @@ class ParseStart2 extends Command
     private $ship_type_chinese = ["海防舰", "驱逐舰", "轻巡洋舰", "重雷装巡洋舰", "重巡洋舰", "航空巡洋舰",
         "轻空母", "战舰", "战舰", "航空战舰", "正规空母", "超弩级战舰", "潜水舰", "潜水空母", "补给舰",
         "水上机母舰", "扬陆舰", "装甲空母", "工作舰", "潜水母舰", "练习巡洋舰", "补给舰"];
+    private $slotitem_name_chinese = ['小口径主炮', '中口径主炮', '大口径主炮', '副炮', '鱼雷', '舰上战斗机',
+        '舰上爆击机', '舰上攻击机', '舰上侦察机', '水上侦察机', '水上爆击机', '小型电探', '大型电探', '声呐',
+        '爆雷', '追加装甲', '结构强化', '对空强化弹', '对舰强化弹', 'VT信管', '对空机枪', '特殊潜航艇', '应急修理要员',
+        '登陆艇', '旋翼机', '反潜巡逻机', '追加装甲(中型)', '追加装甲(大型)', '探照灯', '简易输送部材', '舰艇修理设施',
+        '潜艇专用鱼雷', '照明弹', '舰队司令部设施', '舰空要员', '高射装置', '对地装备', '大口径主炮（II）', '水上舰要员',
+        '大型声呐', '大型飞行艇', '大型探照灯', '战斗粮食', '补给物资', '水上战斗机', '特型内火艇', '陆上攻击机', '局地战斗机',
+        '大型电探（II）', '舰上侦察机（II）'];
+    private  $slotitem_common_map = [
+        'api_id' => 'id',
+        'api_name' => 'name',
+        'api_sortno' => 'sort_no',
+        'api_rare' => 'rare',
+        'api_info' => 'info',
+        'api_usebull' => 'use_bull'
+    ];
 
     public function handle()
     {
@@ -84,6 +100,8 @@ class ParseStart2 extends Command
         $start2ship = $this->sort($start2data['api_mst_ship'], 'api_id');
         $start2shipgraph = $this->sort($start2data['api_mst_shipgraph'], 'api_id');
         $start2shiptype = $start2data['api_mst_stype'];
+        $start2slottype = $start2data['api_mst_slotitem_equiptype'];
+        $start2slotitem = $start2data['api_mst_slotitem'];
         // update kcdata from api_mst_ship
         $this->update($kcdata, $start2ship, $this->ship_map);
         $this->updateInKey($kcdata, $start2ship, $this->ship_stats_map, 'stats');
@@ -91,12 +109,15 @@ class ParseStart2 extends Command
         $this->update($kcdata, $start2shipgraph, $this->ship_graph_map);
         $this->updateInKey($kcdata, $start2shipgraph, $this->ship_graph_detailed_map, 'graph');
         $kcdata = $this->toList($kcdata);
-        foreach ($kcdata as $i => $ship)
+        foreach ($kcdata as $i => $ship) {
             if (array_key_exists('stype', $ship) && $ship['stype'] > 0) {
                 $id = $ship['stype'];
                 $kcdata[$i]['stype_name'] = $start2shiptype[$id - 1]['api_name'];
                 $kcdata[$i]['stype_name_chinese'] = $this->ship_type_chinese[$id - 1];
             }
+            if (array_key_exists('filename', $ship) && count($ship['filename']) > 0)
+                $kcdata[$i]['swf'] = "/kcs/resources/swf/ships/{$ship['filename']}.swf";
+        }
         Storage::disk('local')->put('ship/detailed/all.json', json_encode($kcdata));
         // extract ship filename
         $filename_list = [];
@@ -147,8 +168,58 @@ class ParseStart2 extends Command
             array_push($shiptypes, $shiptype);
         }
         Storage::disk('local')->put('ship/type/all.json', json_encode($shiptypes));
-
-        $this->info('Completed.');
+        $this->info('Parsing slot item data..');
+        // extract slotitem types
+        $slottypes = [];
+        foreach($start2slottype as $i => $type) {
+            $slottype = [];
+            foreach($type as $key => $value) {
+                $dkey = substr($key, 4);
+                $slottype[$dkey] = $value;
+            }
+            $slottype['chinese_name'] = $this->slotitem_name_chinese[$i];
+            array_push($slottypes, $slottype);
+        }
+        Storage::disk('local')->put('slotitem/type/all.json', json_encode($slottypes));
+        // extract slotitems
+        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua slotitem');
+        $slotitem_chinese_name = json_decode(Storage::disk('local')->get('slotitem/chinese_name/all.json'), true);
+        $slotitems = [];
+        $slotitems_common = [];
+        foreach ($start2slotitem as $i => $item) {
+            $slotitem = [];
+            $slotitem['stats'] = [];
+            $slotitem_common = [];
+            foreach($item as $key => $value)
+                if (array_key_exists($key, $this->slotitem_common_map)) {
+                    $slotitem[$this->slotitem_common_map[$key]] = $value;
+                    $slotitem_common[$this->slotitem_common_map[$key]] = $value;
+                }
+                else if ($key == 'api_broken' || $key == 'api_type') {
+                    $slotitem['type'] = $item['api_type'];
+                    $slotitem['broken'] = $item['api_broken'];
+                } else
+                    $slotitem['stats'][substr($key,4)] = $value;
+            $id = $slotitem['id'];
+            if (array_key_exists($id, $slotitem_chinese_name)) {
+                $slotitem['chinese_name'] = $slotitem_chinese_name[$id];
+                $slotitem_common['chinese_name'] = $slotitem_chinese_name[$id];
+            }
+            $slotitem['image'] = [
+                'card' => "/kcs/resources/image/slotitem/card/{$id}.png",
+                'up' => "/kcs/resources/image/slotitem/item_up/{$id}.png",
+                'on' => "/kcs/resources/image/slotitem/item_on/{$id}.png",
+                'character' => "/kcs/resources/image/slotitem/item_character/{$id}.png"
+            ];
+            $slotitem_common['type'] = $slotitem['type'][2];
+            Storage::disk('local')->put("slotitem/$id.json", json_encode($slotitem_common));
+            Storage::disk('local')->put("slotitem/detail/$id.json", json_encode($slotitem));
+            array_push($slotitems_common, $slotitem_common);
+            array_push($slotitems, $slotitem);
+        }
+        Storage::disk('local')->put("slotitem/detail/all.json", json_encode($slotitems));
+        Storage::disk('local')->put("slotitem/all.json", json_encode($slotitems_common));
+        $this->info('Done.');
     }
 
     private function sort($data, $key)

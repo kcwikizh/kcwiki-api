@@ -47,7 +47,27 @@ $app->get('/ships/type', ['middleware' => 'cache', function() {
     return response($raw);
 }]);
 
-$app->get('/ship/detail/{name:.{1,50}}', ['middleware' => 'cache', function($name) {
+$app->get('/ship/sortno/{id:\d{1,3}}', ['middleware' => 'cache', function($id) {
+    $ships = json_decode(SubtitleCache::remember('ships', function() { return Storage::disk('local')->get('ship/all.json');}), true);
+    foreach ($ships as $ship) {
+        if ($ship['sort_no'] == $id) {
+            return response()->json($ship);
+        }
+    }
+    return response()->json(['result'=>'error', 'reason' => 'ship not found']);
+}]);
+
+$app->get('/ship/detail/sortno/{id:\d{1,3}}', ['middleware' => 'cache', function($id) {
+    $ships = json_decode(SubtitleCache::remember('ships/detail', function() { return Storage::disk('local')->get('ship/detailed/all.json');}), true);
+    foreach ($ships as $ship) {
+        if ($ship['sort_no'] == $id) {
+            return response()->json($ship);
+        }
+    }
+    return response()->json(['result'=>'error', 'reason' => 'ship not found']);
+}]);
+
+$app->get('/ship/detail/{name:.{1,100}}', ['middleware' => 'cache', function($name) {
     $ships = json_decode(SubtitleCache::remember('ships/detail', function() { return Storage::disk('local')->get('ship/detailed/all.json');}), true);
     $name = urldecode($name);
     foreach($ships as $i => $ship)
@@ -57,7 +77,7 @@ $app->get('/ship/detail/{name:.{1,50}}', ['middleware' => 'cache', function($nam
     return response()->json(['result'=>'error', 'reason' => 'ship not found']);
 }]);
 
-$app->get('/ship/{name:.{1,50}}', ['middleware' => 'cache', function($name) {
+$app->get('/ship/{name:.{1,100}}', ['middleware' => 'cache', function($name) {
     $ships = json_decode(SubtitleCache::remember('ships', function() { return Storage::disk('local')->get('ship/all.json');}), true);
     $name = urldecode($name);
     foreach($ships as $i => $ship)

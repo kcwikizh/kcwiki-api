@@ -13,11 +13,14 @@ class ParseDB extends Command
 
     protected $description = 'Generate enemy data from kandb database';
 
+    private $slotitems = [];
+
     public function handle()
     {
         switch ($this->argument('option')) {
             case 'enemy':
                 $ships = json_decode(Storage::disk('local')->get('ship/all.json'), true);
+                $this->slotitems = json_decode(Storage::disk('local')->get('slotitem/all.json'), true);
                 $enemy_equips = [];
                 foreach ($ships as $ship) {
                     if ($ship['id'] < 500 || count($ship['name']) <= 0) continue;
@@ -33,6 +36,12 @@ class ParseDB extends Command
                             $row[0]->slot3,
                             $row[0]->slot4
                         ];
+                        $enemy_equip['slot_names'] = [
+                            $this->getSlotItemNameById($row[0]->slot1),
+                            $this->getSlotItemNameById($row[0]->slot2),
+                            $this->getSlotItemNameById($row[0]->slot3),
+                            $this->getSlotItemNameById($row[0]->slot4)
+                        ];
                         array_push($enemy_equips, $enemy_equip);
                         $this->info("Hit");
                     } else {
@@ -43,6 +52,12 @@ class ParseDB extends Command
                 $this->info('Done.');
                 break;
         }
+    }
 
+    private function getSlotItemNameById($id) {
+        if ($id == -1 || $id == '-1') return;
+        foreach ($this->slotitems as $item) {
+            if ($item['id'] == $id) return $item['name'];
+        }
     }
 }

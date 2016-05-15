@@ -246,7 +246,6 @@ class ParseStart2 extends Command
             array_push($furnituregraphs, $furnituregraph);
         }
         Storage::disk('local')->put("furniture/graph/all.json", json_encode($furnituregraphs));
-        $this->info('Done.');
 
         // extract useitem
         $this->info('Parsing use item...');

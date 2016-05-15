@@ -30,6 +30,7 @@ class ParseDB extends Command
                     if (count($row) > 0) {
                         $enemy_equip = [];
                         $enemy_equip['id'] = $ship['id'];
+                        $enemy_equip['name'] = $ship['name'];
                         $enemy_equip['slots'] = [
                             $row[0]->slot1,
                             $row[0]->slot2,

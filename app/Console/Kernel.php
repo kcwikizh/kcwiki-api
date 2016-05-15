@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\ParseStart2;
 use App\Console\Commands\ParseLuaTable;
+use App\Console\Commands\ParseDB;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         ParseStart2::class,
-        ParseLuaTable::class
+        ParseLuaTable::class,
+        ParseDB::class
     ];
 
     /**

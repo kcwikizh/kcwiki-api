@@ -92,6 +92,12 @@ $app->get('/init/equip/enemy', ['middleware' => 'cache', function() {
     return response($raw);
 }]);
 
+$app->get('/init/equip/enemy/missing', ['middleware' => 'cache', function() {
+    $raw = Storage::disk('local')->get('initequip/enemy_missing.json');
+    return response($raw);
+}]);
+
+
 // Auto include router files
 $router_files = scandir(dirname(__FILE__).'/Routers');
 foreach ($router_files as $i => $file)

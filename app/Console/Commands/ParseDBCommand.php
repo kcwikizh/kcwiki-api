@@ -48,11 +48,11 @@ class ParseDB extends Command
                         $this->info("Hit");
                     } else {
                         $this->error("Missing.");
-                        array_push($missing, $ship['name']);
+                        array_push($missing, ['name' => $ship['name'], 'id' => $ship['id']]);
                     }
                 }
                 Storage::disk('local')->put('initequip/enemy.json', json_encode($enemy_equips));
-                print_r($missing);
+                Storage::disk('local')->put('initequip/enemy_missing.json', json_encode($missing));
                 $this->info('Done.');
                 break;
         }

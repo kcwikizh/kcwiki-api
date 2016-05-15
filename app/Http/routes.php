@@ -87,7 +87,7 @@ $app->get('/start2', function() {
    }
 });
 
-$app->get('/initequip/enemy', ['middleware' => 'cache', function() {
+$app->get('/init/equip/enemy', ['middleware' => 'cache', function() {
     $raw = Storage::disk('local')->get('initequip/enemy.json');
     return response($raw);
 }]);

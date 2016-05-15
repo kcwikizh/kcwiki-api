@@ -22,6 +22,7 @@ class ParseDB extends Command
                 $ships = json_decode(Storage::disk('local')->get('ship/all.json'), true);
                 $this->slotitems = json_decode(Storage::disk('local')->get('slotitem/all.json'), true);
                 $enemy_equips = [];
+                $missing = [];
                 foreach ($ships as $ship) {
                     if ($ship['id'] < 500 || count($ship['name']) <= 0) continue;
                     echo "【{$ship['name']}】\n";
@@ -47,9 +48,11 @@ class ParseDB extends Command
                         $this->info("Hit");
                     } else {
                         $this->error("Missing.");
+                        array_push($missing, $ship['name']);
                     }
                 }
                 Storage::disk('local')->put('initequip/enemy.json', json_encode($enemy_equips));
+                print_r($missing);
                 $this->info('Done.');
                 break;
         }

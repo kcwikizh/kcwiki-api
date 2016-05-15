@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\SubtitleCache;
+use App\Util;
 
 // Subtitles API
 $app->get('/subtitles', function() {
@@ -49,7 +50,7 @@ $app->get('/subtitles/jp', function() {
     }
 });
 
-$app->get('/subtitles/jp/{id}', function($id) {
+$app->get('/subtitles/jp/{id:\d{1,4}}', function($id) {
     $subtitles = SubtitleCache::getByShip($id, 'jp');
     if ($subtitles) {
         return $subtitles;
@@ -58,7 +59,7 @@ $app->get('/subtitles/jp/{id}', function($id) {
     }
 });
 
-$app->get('/subtitles/{id}', function($id) {
+$app->get('/subtitles/{id:\d{1,4}}', function($id) {
     $subtitles = SubtitleCache::getByShip($id);
     if ($subtitles) {
         return $subtitles;
@@ -66,6 +67,56 @@ $app->get('/subtitles/{id}', function($id) {
         return response()->json(['result' => 'error', 'reason' => 'Subtitles not found']);
     }
 });
+
+$app->get('/subtitles/detail', ['middleware' => 'cache', function() {
+    $subtitles = SubtitleCache::get();
+    $subtitlesJP = SubtitleCache::get('latest', 'jp');
+    $ships = json_decode(Util::getShips(), true);
+    $results = [];
+    foreach ($ships as $ship) {
+        $id = $ship['id'];
+        if (!array_key_exists($id, $subtitles) && !array_key_exists($id, $subtitlesJP)) continue;
+        $result = [];
+        for ($voiceId = 1; $voiceId < 54; $voiceId ++) {
+            if (array_key_exists($id, $subtitles) && array_key_exists($voiceId, $subtitles[$id])) {
+                $item = [];
+                $item['zh'] = $subtitles[$id][$voiceId];
+                if (array_key_exists($id, $subtitlesJP) && array_key_exists($voiceId, $subtitlesJP[$id]))
+                    $item['jp'] = $subtitlesJP[$id][$voiceId];
+                $filename = $ship['filename'];
+                $voiceCode = Util::converFilename($id, $voiceId);
+                $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
+                $item['scene'] = Util::$vcScenes[$voiceId];
+                $result[$voiceId] = $item;
+            }
+        }
+        array_push($results, $result);
+    }
+    return response()->json($results);
+}]);
+
+$app->get('/subtitle/detail/{id:\d{1,4}}', ['middleware' => 'cache', function($id) {
+    $subtitles = SubtitleCache::get();
+    $subtitlesJP = SubtitleCache::get('latest', 'jp');
+    $ship = json_decode(Util::getShipById($id), true);
+    $id = $ship['id'];
+    $result = [];
+    if (!array_key_exists($id, $subtitles) && !array_key_exists($id, $subtitlesJP)) return response()->json($result);
+    for ($voiceId = 1; $voiceId < 54; $voiceId ++) {
+        if (array_key_exists($id, $subtitles) && array_key_exists($voiceId, $subtitles[$id])) {
+            $item = [];
+            $item['zh'] = $subtitles[$id][$voiceId];
+            if (array_key_exists($id, $subtitlesJP) && array_key_exists($voiceId, $subtitlesJP[$id]))
+                $item['jp'] = $subtitlesJP[$id][$voiceId];
+            $filename = $ship['filename'];
+            $voiceCode = Util::converFilename($id, $voiceId);
+            $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
+            $item['scene'] = Util::$vcScenes[$voiceId];
+            $result[$voiceId] = $item;
+        }
+    }
+    return response()->json($result);
+}]);
 
 $app->get('/maintenance/on/{key}', function($key) {
    if ($key != env('ADMIN_PASSWORD', 'admin')) return 'Oops';

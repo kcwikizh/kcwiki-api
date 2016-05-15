@@ -113,7 +113,6 @@ $app->get('/servers', ['middleware' => 'cache', function() {
     return response()->json($servers);
 }]);
 
-
 // Auto include router files
 $router_files = scandir(dirname(__FILE__).'/Routers');
 foreach ($router_files as $i => $file)

@@ -102,6 +102,11 @@ class ParseStart2 extends Command
         $start2shiptype = $start2data['api_mst_stype'];
         $start2slottype = $start2data['api_mst_slotitem_equiptype'];
         $start2slotitem = $start2data['api_mst_slotitem'];
+        $start2furnitue = $start2data['api_mst_furniture'];
+        $start2furnituegraph = $start2data['api_mst_furnituregraph'];
+        $start2useitem = $start2data['api_mst_useitem'];
+        $start2payitem = $start2data['api_mst_payitem'];
+
         // update kcdata from api_mst_ship
         $this->update($kcdata, $start2ship, $this->ship_map);
         $this->updateInKey($kcdata, $start2ship, $this->ship_stats_map, 'stats');
@@ -220,6 +225,52 @@ class ParseStart2 extends Command
         }
         Storage::disk('local')->put("slotitem/detail/all.json", json_encode($slotitems));
         Storage::disk('local')->put("slotitem/all.json", json_encode($slotitems_common));
+
+        // extract furniture
+        $this->info('Parsing furniture...');
+        $furnitures = [];
+        foreach ($start2furnitue as $item) {
+            $furniture = [];
+            foreach ($item as $key => $value) {
+                $furniture[substr($key, 4)] = $value;
+            }
+            array_push($furnitures, $furniture);
+        }
+        Storage::disk('local')->put("furniture/all.json", json_encode($furnitures));
+        $furnituregraphs = [];
+        foreach ($start2furnituegraph as $item) {
+            $furnituregraph = [];
+            foreach ($item as $key => $value) {
+                $furnituregraph[substr($key, 4)] = $value;
+            }
+            array_push($furnituregraphs, $furnituregraph);
+        }
+        Storage::disk('local')->put("furniture/graph/all.json", json_encode($furnituregraphs));
+        $this->info('Done.');
+
+        // extract useitem
+        $this->info('Parsing use item...');
+        $useitems = [];
+        foreach ($start2useitem as $item) {
+            $useitem = [];
+            foreach ($item as $key => $value) {
+                $useitem[substr($key, 4)] = $value;
+            }
+            array_push($useitems, $useitem);
+        }
+        Storage::disk('local')->put("useitem/all.json", json_encode($useitems));
+
+        // extract payitem
+        $this->info('Parsing pay item...');
+        $payitems = [];
+        foreach ($start2payitem as $item) {
+            $payitem = [];
+            foreach ($item as $key => $value) {
+                $payitem[substr($key, 4)] = $value;
+            }
+            array_push($payitems, $payitem);
+        }
+        Storage::disk('local')->put('payitem/all.json', json_encode($payitems));
         $this->info('Done.');
     }
 

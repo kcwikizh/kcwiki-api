@@ -87,7 +87,8 @@ $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
                 $voiceCode = Util::converFilename($id, $voiceId);
                 $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
                 $item['scene'] = Util::$vcScenes[$voiceId];
-                $result[$voiceId] = $item;
+                $item['voiceId'] = $voiceId;
+                array_push($result, $item);
             }
         }
         array_push($results, $result);
@@ -112,7 +113,8 @@ $app->get('/subtitle/detail/{id:\d{1,4}}', ['middleware' => 'cache', function($i
             $voiceCode = Util::converFilename($id, $voiceId);
             $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
             $item['scene'] = Util::$vcScenes[$voiceId];
-            $result[$voiceId] = $item;
+            $item['voiceId'] = $voiceId;
+            array_push($result, $item);
         }
     }
     return response()->json($result);

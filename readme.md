@@ -98,7 +98,7 @@ Powered By Lumen
 
 	php artisan queue:listen
 
-监听并处理异步任务队列例如在上传完start2数据结束后，服务器将会把`parse:start2`作为任务加入到队列中，等待之后异步执行
+监听并处理异步任务队列，例如在上传完start2数据结束后，服务器将会把`parse:start2`作为任务加入到队列中，等待之后异步执行
 
 可以在`.env`设置任务队列的驱动（`QUEUE_DRIVER`），默认为 redis
 

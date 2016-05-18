@@ -206,6 +206,11 @@ class ParseStart2 extends Command
                 } else
                     $slotitem['stats'][substr($key,4)] = $value;
             $id = $slotitem['id'];
+            // Hot fix: 515 高速深海鱼雷 ==> 22inch魚雷後期型
+            if ($id == 515) {
+                $slotitem['name'] = '22inch魚雷後期型';
+                $slotitem_common['name'] = '22inch魚雷後期型';
+            }
             if (array_key_exists($id, $slotitem_chinese_name)) {
                 $slotitem['chinese_name'] = $slotitem_chinese_name[$id];
                 $slotitem_common['chinese_name'] = $slotitem_chinese_name[$id];

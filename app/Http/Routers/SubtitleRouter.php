@@ -69,8 +69,11 @@ $app->get('/subtitles/{id:\d{1,4}}', function($id) {
 });
 
 $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
-    $subtitles = SubtitleCache::get();
-    $subtitlesJP = SubtitleCache::get('latest', 'jp');
+    $subtitlesRaw = Util::remember('subtitles/distinct', function() {
+        return json_decode(Storage::disk('local')->get('subtitles_distinct.json'), true);
+    });
+    $subtitles = $subtitlesRaw['zh'];
+    $subtitlesJP = $subtitlesRaw['jp'];
     $ships = json_decode(Util::getShips(), true);
     $results = [];
     foreach ($ships as $ship) {
@@ -83,22 +86,29 @@ $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
                 $item['zh'] = $subtitles[$id][$voiceId];
                 if (array_key_exists($id, $subtitlesJP) && array_key_exists($voiceId, $subtitlesJP[$id]))
                     $item['jp'] = $subtitlesJP[$id][$voiceId];
-                $filename = $ship['filename'];
-                $voiceCode = Util::converFilename($id, $voiceId);
-                $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
+                $wikid = $ship['wiki_id'];
+                $alias = Util::$vcScenesAlias[$voiceId];
+                $filename = "$wikid-$alias.mp3";
+                $md5 = md5($filename);
+                $dir = substr($md5,0,1);
+                $subdir = substr($md5,0,2);
+                $item['url'] = "http://upload.kcwiki.moe/commons/$dir/$subdir/$filename";
                 $item['scene'] = Util::$vcScenes[$voiceId];
                 $item['voiceId'] = $voiceId;
                 array_push($result, $item);
             }
         }
-        array_push($results, $result);
+        $results[$id] = $result;
     }
     return response()->json($results);
 }]);
 
 $app->get('/subtitle/detail/{id:\d{1,4}}', ['middleware' => 'cache', function($id) {
-    $subtitles = SubtitleCache::get();
-    $subtitlesJP = SubtitleCache::get('latest', 'jp');
+    $subtitlesRaw = Util::remember('subtitles/distinct', function() {
+        return json_decode(Storage::disk('local')->get('subtitles_distinct.json'), true);
+    });
+    $subtitles = $subtitlesRaw['zh'];
+    $subtitlesJP = $subtitlesRaw['jp'];
     $ship = json_decode(Util::getShipById($id), true);
     $id = $ship['id'];
     $result = [];
@@ -109,9 +119,13 @@ $app->get('/subtitle/detail/{id:\d{1,4}}', ['middleware' => 'cache', function($i
             $item['zh'] = $subtitles[$id][$voiceId];
             if (array_key_exists($id, $subtitlesJP) && array_key_exists($voiceId, $subtitlesJP[$id]))
                 $item['jp'] = $subtitlesJP[$id][$voiceId];
-            $filename = $ship['filename'];
-            $voiceCode = Util::converFilename($id, $voiceId);
-            $item['url'] = "http://voice.kcwiki.moe/kcs/sound/kc$filename/$voiceCode.mp3";
+            $wikid = $ship['wiki_id'];
+            $alias = Util::$vcScenesAlias[$voiceId];
+            $filename = "$wikid-$alias.mp3";
+            $md5 = md5($filename);
+            $dir = substr($md5,0,1);
+            $subdir = substr($md5,0,2);
+            $item['url'] = "http://upload.kcwiki.moe/commons/$dir/$subdir/$filename";
             $item['scene'] = Util::$vcScenes[$voiceId];
             $item['voiceId'] = $voiceId;
             array_push($result, $item);

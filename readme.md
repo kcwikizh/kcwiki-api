@@ -133,7 +133,7 @@ Powered By Lumen
 
 ### 3.4 parse:lua
 
-	parse:lua {option}
+	php artisan parse:lua {option}
 
 基于舰娘百科 Mediawiki Lua Table 生成API源数据
 
@@ -144,114 +144,4 @@ Powered By Lumen
 
 ## 4. API Doc
 
-### 4.1 Error response
-
-API调用出现错误时的返回格式：
-
-	{
-		"result": "error",
-		"reason": "xxx"
-	}
-
-**注：如果调用成功，返回结果并不一定带有result:success键值对**
-
-### 4.2 Subtitle
-
-	http://api.kcwiki.moe/subtitles
-
-数据默认是简体中文，返回格式：  
-
-	{
-		"1": {									// 舰娘ID（非sortno）
-			"1": "我是睦月！一鼓作气向前冲吧！", // 键值为voiceId
-			...
-		},
-		...
-		"version": "2016050905"				// 数据版本号
-	}
-
-#### 4.2.1 Version
-
-	http://api.kcwiki.moe/subtitles/version
-
-返回最新的字幕数据版本号（数字对应字幕数据生成的年月日时），返回格式：
-
-	{ "version": "2016050905" }
-	
-#### 4.2.2 ShipID
-
-根据舰娘编号(`api_id`)来获取字幕数据
-	
-	http://api.kcwiki.moe/subtitles/{shipID}
-
-+ shipID: 舰娘编号ID（例如`1`返回睦月的语音）
-
-返回格式：
-
-#### 4.2.3 Diff
-
-返回目标版本与最新版本的差分结果（POI字幕插件更新数据用）
-
-	http://api.kcwiki.moe/subtitles/diff/{version}
-
-+ version: 字幕数据版本号
-
-返回格式同`/subtitles`
-
-#### 4.2.4 I18n
-
-字幕数据支持多语言，其接口如下（每个接口含义参考前述）：
-
-	http://api.kcwiki.moe/subtitles/{lang}
-	http://api.kcwiki.moe/subtitles/{lang}/{shipID}
-	http://api.kcwiki.moe/subtitles/{lang}/diff/{version}
-
-+ lang: 语言，目前暂时仅支持日语，值为`jp`
-
-返回格式与简体中文的返回格式相同
-
-### 4.3 Twitter
-
-返回舰娘官推数据（带翻译）
-
-	http://api.kcwiki.moe/tweet/{count}
-
-+ count: 请求的官推条数，例如20
-
-返回格式：
-
-	{
-		{
-			"zh": "xxx",					// 推特内容（中文）
-			"jp": "xxx",					// 推特内容（日文）
-			"date": "2016-05-06 08:55:30"	// 日期
-		}
-		...
-	}
-
-#### 4.3.1 Plain Text
-
-默认官推的输出格式为HTML，如果想要提取后的纯文本，可以请求：
-
-	http://api.kcwiki.moe/tweet/plain/{count}
-
-返回格式与之前相同
-
-### 4.4 Start2 Data
-
-返回`api_start2.json`的原始数据
-
-	http://api.kcwiki.moe/start2
-
-### 4.5 Report API
-
-Kcwiki的poi报告插件的上传数据API，[详情见](https://github.com/kcwikizh/kcwiki-report)
-
-### 4.6 Maintenance Mode
-
-开启/关闭维护模式，若开启，则字幕差分更新（`/subtitles/diff`）接口返回空值
-
-	http://api.kcwiki.moe/maintenance/on/{password}
-	http://api.kcwiki.moe/maintenance/off/{password}
-
-+ `password`：对应.env配置文件中的`ADMIN_PASSWORD`
+本服务的具体开放API请[参考](https://github.com/kcwikizh/kcwiki-api/wiki)

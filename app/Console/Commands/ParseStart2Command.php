@@ -145,7 +145,7 @@ class ParseStart2 extends Command
                 Storage::disk('local')->put("ship/stats/$id.json", json_encode($stats));
                 array_push($stats_list, $stats);
             }
-        Storage::disk('local')->put('ship/stats/all.json', json_encode($filename_list));
+        Storage::disk('local')->put('ship/stats/all.json', json_encode($stats_list));
         // extract common use data from the previous results
         $common_lists = [];
         foreach ($kcdata as $i => $ship)

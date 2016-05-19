@@ -132,6 +132,7 @@ class ParseStart2 extends Command
                 $filename['filename'] = $ship['filename'];
                 $filename['file_version'] = $ship['file_version'];
                 $id = $ship['id'];
+                $filename['id'] = $id;
                 Storage::disk('local')->put("ship/filename/$id.json", json_encode($filename));
                 array_push($filename_list, $filename);
             }
@@ -141,7 +142,7 @@ class ParseStart2 extends Command
         foreach ($kcdata as $i => $ship)
             if (array_key_exists('stats', $ship) && array_key_exists('name', $ship) && count($ship['name']) > 0) {
                 $stats = $ship['stats'];
-                $stats['id'] = $id;
+                $stats['id'] = $ship['id'];
                 $id = $ship['id'];
                 Storage::disk('local')->put("ship/stats/$id.json", json_encode($stats));
                 array_push($stats_list, $stats);

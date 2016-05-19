@@ -17,17 +17,6 @@ Powered By Lumen
   - [3.3 parse:db](#33-parsedb)
   - [3.4 parse:lua](#34-parselua)
 - [4. API Doc](#4-api-doc)
-  - [4.1 Error response](#41-error-response)
-  - [4.2 Subtitle](#42-subtitle)
-    - [4.2.1 Version](#421-version)
-    - [4.2.2 ShipID](#422-shipid)
-    - [4.2.3 Diff](#423-diff)
-    - [4.2.4 I18n](#424-i18n)
-  - [4.3 Twitter](#43-twitter)
-    - [4.3.1 Plain Text](#431-plain-text)
-  - [4.4 Start2 Data](#44-start2-data)
-  - [4.5 Report API](#45-report-api)
-  - [4.6 Maintenance Mode](#46-maintenance-mode)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

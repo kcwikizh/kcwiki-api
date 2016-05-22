@@ -172,6 +172,7 @@ class ParseStart2 extends Command
                 $dst_key = substr($key, 4);
                 $shiptype[$dst_key] = $value;
             }
+            $shiptype['chinese_name'] = $this->ship_type_chinese[$i];
             array_push($shiptypes, $shiptype);
         }
         Storage::disk('local')->put('ship/type/all.json', json_encode($shiptypes));

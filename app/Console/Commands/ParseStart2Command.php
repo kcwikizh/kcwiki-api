@@ -86,6 +86,8 @@ class ParseStart2 extends Command
         'api_info' => 'info',
         'api_usebull' => 'use_bull'
     ];
+    private $furniture_names = ["床","壁紙","窓","壁掛け","家具","机"];
+
 
     public function handle()
     {
@@ -253,6 +255,7 @@ class ParseStart2 extends Command
             foreach ($item as $key => $value) {
                 $furniture[substr($key, 4)] = $value;
             }
+            $furniture['type_name'] = $this->furniture_names[$furniture['type']];
             array_push($furnitures, $furniture);
         }
         Storage::disk('local')->put("furniture/all.json", json_encode($furnitures));

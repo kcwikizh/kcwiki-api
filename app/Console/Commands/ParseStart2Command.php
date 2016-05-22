@@ -164,6 +164,17 @@ class ParseStart2 extends Command
                 Storage::disk('local')->put("ship/$id.json", json_encode($common));
             }
         Storage::disk('local')->put('ship/all.json', json_encode($common_lists));
+        // extract ship graphs
+        $graph_list = [];
+        foreach ($kcdata as $i => $ship)
+            if (array_key_exists('graph', $ship)) {
+                $graph = $ship['graph'];
+                $id = $ship['id'];
+                $graph['id'] = $id;
+                Storage::disk('local')->put("ship/graph/$id.json", json_encode($graph));
+                array_push($graph_list, $graph);
+            }
+        Storage::disk('local')->put('ship/graph/all.json', json_encode($graph_list));
         // extract ship types
         $shiptypes = [];
         foreach ($start2shiptype as $i => $type) {

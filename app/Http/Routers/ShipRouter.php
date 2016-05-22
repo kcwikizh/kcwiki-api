@@ -42,6 +42,16 @@ $app->get('/ship/stats/{id:\d{1,3}}', ['middleware' => 'cache', function($id) {
     return response($raw);
 }]);
 
+$app->get('/ships/graph', ['middleware' => 'cache', function() {
+    $raw = Storage::disk('local')->get('ship/graph/all.json');
+    return response($raw);
+}]);
+
+$app->get('/ship/graph/{id:\d{1,3}}', ['middleware' => 'cache', function($id) {
+    $raw = Storage::disk('local')->get("ship/graph/$id.json");
+    return response($raw);
+}]);
+
 $app->get('/ships/type', ['middleware' => 'cache', function() {
     $raw = Storage::disk('local')->get("ship/type/all.json");
     return response($raw);

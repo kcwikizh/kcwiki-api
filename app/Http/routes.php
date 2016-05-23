@@ -71,6 +71,9 @@ $app->post('/start2/upload', function(Request $request) {
     if (env('ADMIN_PASSWORD', 'admin') !== $inputs['password'])
         return response()->json(['result' => 'error', 'reason' => 'Incorrect password']);
     Storage::disk('local')->put('api_start2.json', $inputs['data']);
+    $datetime = new DateTime();
+    $today = $datetime->format('Ymd');
+    Storage::disk('local')->put("start2/$today.json", $inputs['data']);
     Queue::push(function ($job) {
         Artisan::call('parse:start2');
         $job->delete();

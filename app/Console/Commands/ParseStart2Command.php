@@ -112,6 +112,7 @@ class ParseStart2 extends Command
         $start2maparea = $start2data['api_mst_maparea'];
         $start2mapinfo = $start2data['api_mst_mapinfo'];
         $start2mapcell = $start2data['api_mst_mapcell'];
+        $start2mission = $start2data['api_mst_mission'];
 
         // update kcdata from api_mst_ship
         $this->update($kcdata, $start2ship, $this->ship_map);
@@ -309,7 +310,7 @@ class ParseStart2 extends Command
         Storage::disk('local')->put('shop/all.json', json_encode($shops));
 
         // extract map data
-        $this->info('Parsing map data...');
+        $this->info('Parsing map...');
         $maps = [];
         $mihashmap = [];
         // Parse maparea data
@@ -364,6 +365,18 @@ class ParseStart2 extends Command
             }
         }
         Storage::disk('local')->put('map/all.json', json_encode($maps));
+
+        // extract mission data
+        $this->info('Parsing mission...');
+        $missions = [];
+        foreach ($start2mission as $item) {
+            $mission = [];
+            foreach ($item as $key => $value) {
+                $mission[substr($key, 4)] = $value;
+            }
+            array_push($missions, $mission);
+        }
+        Storage::disk('local')->put('mission/all.json', json_encode($missions));
         $this->info('Done.');
     }
 

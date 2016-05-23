@@ -1,6 +1,6 @@
 # Kcwiki API 服务
 
-Powered By Lumen
+API for kancolle game data. Powered By Lumen
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -21,6 +21,8 @@ Powered By Lumen
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## 1. Installation
+
+请事先部署 PHP5.4+ 、 Mysql 、 Redis（可选）
 
 安装PHP依赖库：
 

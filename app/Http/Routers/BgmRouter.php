@@ -6,7 +6,7 @@ $app->get('/bgm', ['middleware' => 'cache', function() {
     return response($raw);
 }]);
 
-$app->get('/mapbgm', ['middleware' => 'cache', function() {
+$app->get('/map/bgm', ['middleware' => 'cache', function() {
     $raw = Storage::disk('local')->get('mapbgm/all.json');
     return response($raw);
 }]);

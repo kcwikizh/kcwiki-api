@@ -88,7 +88,6 @@ class ParseStart2 extends Command
     ];
     private $furniture_names = ["床","壁紙","窓","壁掛け","家具","机"];
 
-
     public function handle()
     {
         $this->info('Fetching http://kcwikizh.github.io/kcdata/ship/all.json ...');
@@ -108,6 +107,7 @@ class ParseStart2 extends Command
         $start2furnituegraph = $start2data['api_mst_furnituregraph'];
         $start2useitem = $start2data['api_mst_useitem'];
         $start2payitem = $start2data['api_mst_payitem'];
+        $start2itemshop = $start2data['api_mst_item_`shop'];
 
         // update kcdata from api_mst_ship
         $this->update($kcdata, $start2ship, $this->ship_map);
@@ -292,6 +292,17 @@ class ParseStart2 extends Command
             array_push($payitems, $payitem);
         }
         Storage::disk('local')->put('payitem/all.json', json_encode($payitems));
+
+        // extract item shop
+        $this->info('Parsing item shop');
+        $shops = [0 => [], 1 => []];
+        foreach ($start2itemshop['api_cabinet_1'] as $item) {
+            array_push($shops[0], $item);
+        }
+        foreach ($start2itemshop['api_cabinet_2'] as $item) {
+            array_push($shops[1], $item);
+        }
+        Storage::disk('local')->put('shop/all.json', json_encode($shops));
         $this->info('Done.');
     }
 

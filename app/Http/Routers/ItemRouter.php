@@ -20,3 +20,8 @@ $app->get('/payitems', ['middleware' => 'cache', function() {
     $raw = Storage::disk('local')->get('payitem/all.json');
     return response($raw);
 }]);
+
+$app->get('/shop', ['middleware' => 'cache', function() {
+    $raw = Storage::disk('local')->get('shop/all.json');
+    return response($raw);
+}]);

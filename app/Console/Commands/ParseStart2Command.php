@@ -113,6 +113,8 @@ class ParseStart2 extends Command
         $start2mapinfo = $start2data['api_mst_mapinfo'];
         $start2mapcell = $start2data['api_mst_mapcell'];
         $start2mission = $start2data['api_mst_mission'];
+        $start2mapbgm = $start2data['api_mst_mapbgm'];
+        $start2bgm = $start2data['api_mst_bgm'];
 
         // update kcdata from api_mst_ship
         $this->update($kcdata, $start2ship, $this->ship_map);
@@ -377,6 +379,28 @@ class ParseStart2 extends Command
             array_push($missions, $mission);
         }
         Storage::disk('local')->put('mission/all.json', json_encode($missions));
+
+        // extract bgm data
+        $this->info('Parsing bgm...');
+        $mapbgms = [];
+        foreach ($start2mapbgm as $item) {
+            $mapbgm = [];
+            foreach ($item as $key => $value) {
+                $mapbgm[substr($key, 4)] = $value;
+            }
+            array_push($mapbgms, $mapbgm);
+        }
+        Storage::disk('local')->put('mapbgm/all.json', json_encode($mapbgms));
+
+        $bgms = [];
+        foreach ($start2bgm as $item) {
+            $bgm = [];
+            foreach ($item as $key => $value) {
+                $bgm[substr($key, 4)] = $value;
+            }
+            array_push($bgms, $bgm);
+        }
+        Storage::disk('local')->put('bgm/all.json', json_encode($bgms));
         $this->info('Done.');
     }
 

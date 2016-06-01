@@ -5,3 +5,4 @@
 /database/database.sqlite
 /storage/app/
 composer.lock
+/public/.well-known

@@ -116,6 +116,24 @@ $app->get('/servers', ['middleware' => 'cache', function() {
     return response()->json($servers);
 }]);
 
+$app->get('/avatar/latest', ['middleware' => 'cache', function() {
+    $raw = file_get_contents('http://static.kcwiki.moe/Avatar/archives.json');
+    $archives = json_decode($raw, true);
+    $base = 'http://static.kcwiki.moe/Avatar/';
+    $latest = array_slice($archives, -1)[0];
+    return response()->json(['latest' => $base.$latest]);
+}]);
+
+$app->get('/avatars', ['middleware' => 'cache', function() {
+    $raw = file_get_contents('http://static.kcwiki.moe/Avatar/archives.json');
+    $archives = json_decode($raw, true);
+    $base = 'http://static.kcwiki.moe/Avatar/';
+    return response()->json([
+        'base' => $base,
+        'archives' => $archives
+    ]);
+}]);
+
 // Auto include router files
 $router_files = scandir(dirname(__FILE__).'/Routers');
 foreach ($router_files as $i => $file)

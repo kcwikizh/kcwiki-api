@@ -90,6 +90,35 @@ $app->get('/start2', function() {
    }
 });
 
+$app->get('/start2/archives', function() {
+    $files = Storage::disk('local')->files('start2');
+    $list = [];
+    $matches = [];
+    foreach($files as $file) {
+        preg_match('/\d{8}/', $file, $matches);
+        if (count($matches) > 0) array_push($list, $matches[0]);
+    }
+    return response()->json($list);
+});
+
+$app->get('/start2/prev', function() {
+    $files = Storage::disk('local')->files('start2');
+    if (count($files) < 1) return response()->json(['result' => 'error', 'reason' => 'There is no start2 data in server']);
+    $file = $files[max(count($files) - 2, 0)];
+    $data = Storage::disk('local')->get($file);
+    return response($data)->header('Content-Type', 'application/json');
+});
+
+$app->get('/start2/{version:\d{8}}', function($version) {
+    $file = 'start2/'.$version.'.json';
+    try {
+        $data = Storage::disk('local')->get($file);
+        return response($data)->header('Content-Type', 'application/json');
+    } catch (FileNotFoundException $e) {
+        return response()->json(['result' => 'error', 'reason' => "start2($version) not found in server"]);
+    }
+});
+
 $app->get('/servers', ['middleware' => 'cache', function() {
     $servers =  [
         '203.104.209.71',

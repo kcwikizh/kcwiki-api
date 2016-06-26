@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Kcwiki 新闻API</title>
     <link rel="stylesheet" href="/css/semantic.min.css">
+    <link rel="shortcut icon" href="/favicon.ico">
     <style>
         .ui.blue.segment { margin-top: 100px; padding-bottom: 0px; }
         body { background-color: #E8ECF2; }

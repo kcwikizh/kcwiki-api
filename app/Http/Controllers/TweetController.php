@@ -33,6 +33,10 @@ class TweetController extends BaseController
                 $p = $dom->find('p');
                 $plength = count($p);
                 $new_post = [];
+                if (array_key_exists('ozh_ta_id', $post['custom_fields']) && is_array($post['custom_fields']['ozh_ta_id']))
+                    $new_post['id'] = $post['custom_fields']['ozh_ta_id'][0];
+                else
+                    $new_post['id'] = '';
                 $new_post['jp'] = $p[0]->outerHtml;
                 $new_post['zh'] = '';
                 for ($i=1; $i < $plength; $i++) {

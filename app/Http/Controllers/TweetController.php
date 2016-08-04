@@ -46,6 +46,12 @@ class TweetController extends BaseController
                 if ($option == 'plain') {
                     $new_post['zh'] = strip_tags($new_post['zh']);
                     $new_post['jp'] = strip_tags($new_post['jp']);
+                    $img = $dom->find('img');
+                    if (count($img) > 0) {
+                        $new_post['img'] = $img[0]->getAttribute('src');
+                    } else {
+                        $new_post['img'] = '';
+                    }
                 }
                 array_push($output, $new_post);
             }

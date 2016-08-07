@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use App\Optime;
 
 /*
 |--------------------------------------------------------------------------
@@ -161,6 +162,39 @@ $app->get('/avatars', ['middleware' => 'cache', function() {
         'base' => $base,
         'archives' => $archives
     ]);
+}]);
+
+$app->post('/optime', function(Request $request){
+    $rules = [
+        'start-time' => 'required|date_format:"Y-m-d H:i"',
+        'end-time' => 'date_format:"Y-m-d H:i"',
+        'comment' => 'required',
+        'type' => 'required|in:server,account'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid'])->header('Access-Control-Allow-Origin', '*');
+    }
+    $type = $request->input('type');
+    Optime::create([
+        'start_time' => $request->input('start-time'),
+        'comment' => $request->input('comment'),
+        'type' => $type
+    ]);
+    return response()->json(['result'=>'success'])->header('Access-Control-Allow-Origin', '*');
+});
+
+$app->get('/optime/{type}', ['middleware' => 'cache', function($type) {
+    if ($type !== 'account' && $type !== 'server') return response()->json(['result' => 'error', 'reason' => 'invalid type']);
+    try {
+        $optime = Optime::where('type', $type)->orderBy('id', 'desc')->firstOrFail();
+        return response()->json([
+            'time' => $optime['start_time'],
+            'comment' => $optime['comment']
+        ]);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json(['result' => 'error', 'reason' => 'record not found']);
+    }
 }]);
 
 // Auto include router files

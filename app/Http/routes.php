@@ -166,7 +166,7 @@ $app->get('/avatars', ['middleware' => 'cache', function() {
 
 $app->post('/optime', function(Request $request){
     $rules = [
-        'start-time' => 'required|date_format:"Y-m-d H:i"',
+        'start-time' => 'date_format:"Y-m-d H:i"',
         'end-time' => 'date_format:"Y-m-d H:i"',
         'comment' => 'required',
         'type' => 'required|in:server,account'

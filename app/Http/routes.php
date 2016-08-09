@@ -184,8 +184,8 @@ $app->post('/optime', function(Request $request){
         'comment' => $request->input('comment'),
         'type' => $type
     ]);
-    Cache::forget(route('optime', ['type' => 'server']));
-    Cache::forget(route('optime', ['type' => 'account']));
+    Cache::forget('optime/server');
+    Cache::forget('optime/account');
     return response()->json(['result'=>'success'])->header('Access-Control-Allow-Origin', '*');
 });
 

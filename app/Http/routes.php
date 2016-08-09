@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\Optime;
 
@@ -183,10 +184,12 @@ $app->post('/optime', function(Request $request){
         'comment' => $request->input('comment'),
         'type' => $type
     ]);
+    Cache::forget(route('optime', ['type' => 'server']));
+    Cache::forget(route('optime', ['type' => 'account']));
     return response()->json(['result'=>'success'])->header('Access-Control-Allow-Origin', '*');
 });
 
-$app->get('/optime/{type}', ['middleware' => 'cache', function($type) {
+$app->get('/optime/{type}', ['as' => 'optime', 'middleware' => 'cache', function($type) {
     if ($type !== 'account' && $type !== 'server') return response()->json(['result' => 'error', 'reason' => 'invalid type']);
     try {
         $optime = Optime::where('type', $type)->orderBy('id', 'desc')->firstOrFail();

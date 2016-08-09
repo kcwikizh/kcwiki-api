@@ -167,14 +167,16 @@ $app->get('/avatars', ['middleware' => 'cache', function() {
 $app->post('/optime', function(Request $request){
     $rules = [
         'start-time' => 'date_format:"Y-m-d H:i"',
-        'end-time' => 'date_format:"Y-m-d H:i"',
         'comment' => 'required',
+        'password' => 'required|alpha_num',
         'type' => 'required|in:server,account'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid'])->header('Access-Control-Allow-Origin', '*');
     }
+    if (env('OPTIME_PASSWORD', 'somepassword') !== $request->input('password'))
+        return response()->json(['result' => 'error', 'reason' => 'Incorrect password'])->header('Access-Control-Allow-Origin', '*');
     $type = $request->input('type');
     Optime::create([
         'start_time' => $request->input('start-time'),

@@ -30,13 +30,28 @@ class TweetController extends BaseController
             foreach ($posts as $post) {
                 $dom = new Dom;
                 $dom->load($post['content']);
-                $p = $dom->find('p');
-                $plength = count($p);
                 $new_post = [];
                 if (array_key_exists('ozh_ta_id', $post['custom_fields']) && is_array($post['custom_fields']['ozh_ta_id']))
                     $new_post['id'] = $post['custom_fields']['ozh_ta_id'][0];
                 else
                     $new_post['id'] = '';
+                $img = $dom->find('img');
+                if (count($img) > 0) {
+                    $new_post['img'] = $img[0]->getAttribute('src');
+                    foreach ($img as $x) {
+                        $parent = $x->getParent();
+                        $parentTagName = $parent->getTag()->name();
+                        if ($parentTagName == 'a') {
+                            $parent->delete();
+                        } else {
+                            $x->delete();
+                        }
+                    }
+                } else {
+                    $new_post['img'] = '';
+                }
+                $p = $dom->find('p');
+                $plength = count($p);
                 $new_post['jp'] = $p[0]->outerHtml;
                 $new_post['zh'] = '';
                 for ($i=1; $i < $plength; $i++) {
@@ -46,12 +61,6 @@ class TweetController extends BaseController
                 if ($option == 'plain') {
                     $new_post['zh'] = strip_tags($new_post['zh']);
                     $new_post['jp'] = strip_tags($new_post['jp']);
-                    $img = $dom->find('img');
-                    if (count($img) > 0) {
-                        $new_post['img'] = $img[0]->getAttribute('src');
-                    } else {
-                        $new_post['img'] = '';
-                    }
                 }
                 array_push($output, $new_post);
             }

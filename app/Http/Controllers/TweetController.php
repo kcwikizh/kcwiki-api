@@ -13,6 +13,11 @@ class TweetController extends BaseController
         return $this->handle($count, 'html');
     }
 
+    public function getExtracted($count)
+    {
+        return $this->handle($count, 'extracted');
+    }
+
     public function getPlain($count)
     {
         return $this->handle($count, 'plain');
@@ -36,7 +41,7 @@ class TweetController extends BaseController
                 else
                     $new_post['id'] = '';
                 $img = $dom->find('img');
-                if (count($img) > 0) {
+                if (count($img) > 0 && $option != 'html') {
                     $new_post['img'] = $img[0]->getAttribute('src');
                     foreach ($img as $x) {
                         $parent = $x->getParent();
@@ -47,7 +52,7 @@ class TweetController extends BaseController
                             $x->delete();
                         }
                     }
-                } else {
+                } else if ($option != 'html') {
                     $new_post['img'] = '';
                 }
                 $p = $dom->find('p');

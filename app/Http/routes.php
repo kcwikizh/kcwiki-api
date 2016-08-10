@@ -56,7 +56,8 @@ $app->get('/logout', function(){
 });
 
 // Tweet
-$app->get('/tweet/{count:\d{1,3}}', ['uses' => 'TweetController@getHtml']);
+$app->get('/tweet/{count:\d{1,3}}', ['uses' => 'TweetController@getExtracted']);
+$app->get('/tweet/html/{count:\d{1,3}}', ['uses' => 'TweetController@getHtml']);
 $app->get('/tweet/plain/{count:\d{1,3}}', ['uses' => 'TweetController@getPlain']);
 
 // Api Start2

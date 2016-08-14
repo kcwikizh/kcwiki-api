@@ -173,3 +173,8 @@ $app->get('/report/enemies', ['middleware' => 'cache', function() {
     $raw = Util::load('report/enemy.json');
     return $raw;
 }]);
+
+$app->get('/report/new', ['middleware' => 'cache', function() {
+    $raw = Util::load('report/new.json');
+    return $raw;
+}]);

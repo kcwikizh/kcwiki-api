@@ -17,8 +17,7 @@ class ParseReport extends Command
     private $enemies = ["重巡夏姫", "港湾夏姫", "港湾夏姫-壊", "潜水夏姫", "戦艦夏姫"];
 
     // Target new ships (Ship ID)
-//    private $new = [439, 364, 444, 365, 481, 366, 483, 367];
-    private $new = [70];
+    private $new = [439, 364, 444, 365, 481, 366, 483, 367];
 
     public function handle()
     {
@@ -80,11 +79,6 @@ class ParseReport extends Command
     private function handleNewShip() {
         $missing = ['min' => [], 'max' => []];
         $results = [];
-//        DB::listen(function($sql, $bindings, $time) {
-//            echo $sql."\n";
-//            var_dump($bindings);
-//            echo $time."\n";
-//        });
         foreach ($this->new as $new) {
             try {
                 $ship = Util::load("ship/$new.json");
@@ -92,7 +86,6 @@ class ParseReport extends Command
                 $this->error("$new not found..");
             }
             $sortno = $ship['sort_no'];
-            $sortno = 70;
             $this->info("【{$ship['name']}】");
             // Min attributes
             $row = DB::select('select min(`level`) as level from ship_attrs where sortno=:sortno', ['sortno' => $sortno]);

@@ -52,4 +52,12 @@ class Util {
         }
         return Cache::get($key);
     }
+
+    static public function load($path, $driver='local') {
+        return json_decode(Storage::disk($driver)->get($path), true);
+    }
+
+    static public function dump($path, $data, $driver='local') {
+        Storage::disk($driver)->put($path, json_encode($data));
+    }
 }

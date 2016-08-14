@@ -3,6 +3,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent;
+use App\Util;
 
 // Reporter API
 $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
@@ -165,4 +166,10 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
         'dantan' => $dantan
     ]);
     return response()->json(['result' => 'success']);
+}]);
+
+// Report Results
+$app->get('/report/enemies', ['middleware' => 'cache', function() {
+    $raw = Util::load('report/enemy.json');
+    return $raw;
 }]);

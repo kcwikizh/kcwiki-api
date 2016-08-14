@@ -33,7 +33,7 @@ class ParseReport extends Command
                     }
                     if (!$found) array_push($missing, $enemy);
                 }
-                foreach ($results as $result) {
+                foreach ($results as &$result) {
                     $id = $result['id'];
                     $this->info("【{$result['name']}】");
                     $row = DB::select('select count(*) as counts,id,enemyId,maxHP,slot1,slot2,slot3,slot4,slot5,houg,raig,tyku,souk from enemies where enemyId=:enemyId group by enemyId,slot1,slot2,slot3,slot4,slot5 order by counts desc limit 1',

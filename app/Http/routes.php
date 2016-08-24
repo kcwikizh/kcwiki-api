@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use App\Optime;
+use App\Enemy;
+use App\News;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ use App\Optime;
 
 // Homepage
 $app->get('/', function() {
-   return view('link');
+    return view('link');
 });
 
 $app->get('/panel', function() use ($app) {
@@ -33,8 +34,8 @@ $app->get('/panel', function() use ($app) {
         $maps = json_decode(Storage::disk('local')->get('api_maps.json'), false)->results;
         $equips = json_decode(Storage::disk('local')->get('api_equips.json'), false)->results;
         return view('index')->withNews($news)->withUser($user)->withShips($ships)->withMaps($maps)->withEquips($equips);
-    }
-    return redirect('/login');
+     }
+     return redirect('/login');
 });
 
 // Login
@@ -122,31 +123,35 @@ $app->get('/start2/{version:\d{8}}', function($version) {
     }
 });
 
-$app->get('/servers', ['middleware' => 'cache', function() {
-    $servers =  [
-        '203.104.209.71',
-        '203.104.209.87',
-        '125.6.184.16',
-        '125.6.187.205',
-        '125.6.187.229',
-        '125.6.187.253',
-        '125.6.188.25',
-        '203.104.248.135',
-        '125.6.189.7',
-        '125.6.189.39',
-        '125.6.189.71',
-        '125.6.189.103',
-        '125.6.189.135',
-        '125.6.189.167',
-        '125.6.189.215',
-        '125.6.189.247',
-        '203.104.209.23',
-        '203.104.209.39',
-        '203.104.209.55',
-        '203.104.209.102'
-    ];
-    return response()->json($servers);
-}]);
+// $app->get('/servers', ['middleware' => 'cache', function() {
+//     $servers =  [
+//         '203.104.209.71',
+//         '203.104.209.87',
+//         '125.6.184.16',
+//         '125.6.187.205',
+//         '125.6.187.229',
+//         '125.6.187.253',
+//         '125.6.188.25',
+//         '203.104.248.135',
+//         '125.6.189.7',
+//         '125.6.189.39',
+//         '125.6.189.71',
+//         '125.6.189.103',
+//         '125.6.189.135',
+//         '125.6.189.167',
+//         '125.6.189.215',
+//         '125.6.189.247',
+//         '203.104.209.23',
+//         '203.104.209.39',
+//         '203.104.209.55',
+//         '203.104.209.102'
+//     ];
+//     return response()->json($servers);
+// }]);
+
+$app->get('/servers',function(){
+    return Storage::get("api_servers.json");
+});
 
 $app->get('/avatar/latest', ['middleware' => 'cache', function() {
     $raw = file_get_contents('http://static.kcwiki.moe/Avatar/archives.json');

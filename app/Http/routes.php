@@ -123,34 +123,13 @@ $app->get('/start2/{version:\d{8}}', function($version) {
     }
 });
 
-// $app->get('/servers', ['middleware' => 'cache', function() {
-//     $servers =  [
-//         '203.104.209.71',
-//         '203.104.209.87',
-//         '125.6.184.16',
-//         '125.6.187.205',
-//         '125.6.187.229',
-//         '125.6.187.253',
-//         '125.6.188.25',
-//         '203.104.248.135',
-//         '125.6.189.7',
-//         '125.6.189.39',
-//         '125.6.189.71',
-//         '125.6.189.103',
-//         '125.6.189.135',
-//         '125.6.189.167',
-//         '125.6.189.215',
-//         '125.6.189.247',
-//         '203.104.209.23',
-//         '203.104.209.39',
-//         '203.104.209.55',
-//         '203.104.209.102'
-//     ];
-//     return response()->json($servers);
-// }]);
-
 $app->get('/servers',function(){
-    return Storage::get("api_servers.json");
+    try {
+        $data = Storage::disk('local')->get('api_servers.json');
+        return response($data)->header('Content-Type', 'application/json');
+    } catch (FileNotFoundException $e) {
+        return response()->json(['result' => 'error', 'reason' => "server information not found in server"]);
+    }
 });
 
 $app->get('/avatar/latest', ['middleware' => 'cache', function() {
@@ -207,6 +186,15 @@ $app->get('/optime/{type}', ['as' => 'optime', 'middleware' => 'cache', function
         return response()->json(['result' => 'error', 'reason' => 'record not found']);
     }
 }]);
+
+//Purge cache
+$app->get('/purge/{option}', function($option) {
+     if($option=="all")
+         Cache::flush();
+     else
+         Cache::tags($option)->flush();
+    return $option." cache has been purged!";
+});
 
 // Auto include router files
 $router_files = scandir(dirname(__FILE__).'/Routers');

@@ -3,6 +3,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
 class SubtitleCache {
+
+    const TAG="subtitles";
+
     static public function get($ver='latest', $lang='zh-cn') {
         $latest = self::getLatest();
         $version = $ver == 'latest' ? $latest : $ver;
@@ -61,8 +64,8 @@ class SubtitleCache {
     static public function remember($key, $callback) {
         if (!Cache::has($key)) {
             $value = $callback();
-            Cache::put($key, $value, 60);
+            Cache::tags(self::TAG)->put($key, $value, 60);
         }
-        return Cache::get($key);
+        return Cache::tags(self::TAG)->get($key);
     }
 }

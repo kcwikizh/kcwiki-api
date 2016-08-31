@@ -17,11 +17,16 @@ class CacheMiddleware
     public function handle($request, Closure $next)
     {
         $uri = $request->path();
-        if (Cache::has($uri))
-            return response(Cache::get($uri))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
+        preg_match_all("/(.*?)\//",$uri,$raw);
+        if(isset($raw[1][0]))
+            $tag=$raw[1][0];
+        else
+            $tag=$uri;
+        if (Cache::tags($tag)->has($uri))
+            return response(Cache::tags($tag)->get($uri))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
         try {
             $response = $next($request);
-            Cache::forever($uri, $response->getContent());
+            Cache::tags($tag)->forever($uri, $response->getContent());
         } catch (FileNotFoundException $e) {
             $response = response()->json(['result'=>'error', 'reason'=>'data not found.']);
         }

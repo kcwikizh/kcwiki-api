@@ -8,6 +8,7 @@ use App\Console\Commands\ParseStart2;
 use App\Console\Commands\ParseLuaTable;
 use App\Console\Commands\ParseDB;
 use App\Console\Commands\ParseReport;
+use App\Console\Commands\ParseServer;
 
 class Kernel extends ConsoleKernel
 {
@@ -20,7 +21,8 @@ class Kernel extends ConsoleKernel
         ParseStart2::class,
         ParseLuaTable::class,
         ParseDB::class,
-        ParseReport::class
+        ParseReport::class,
+        ParseServer::class
     ];
 
     /**

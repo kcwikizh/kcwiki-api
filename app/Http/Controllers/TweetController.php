@@ -26,7 +26,8 @@ class TweetController extends BaseController
     private function handle($count, $option)
     {
         $key = "tweet.$option.$count";
-        if (Cache::has($key)) return response(Cache::get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
+        $tag = "tweet";
+        if (Cache::tags($tag)->has($key)) return response(Cache::tags($tag)->get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
         $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
         if ($rep) {
             $result = json_decode($rep, true);
@@ -69,7 +70,7 @@ class TweetController extends BaseController
                 }
                 array_push($output, $new_post);
             }
-            Cache::put($key, $output, 5);
+            Cache::tags($tag)->put($key, $output, 5);
             return response($output)->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
         } else {
             return response()->json(['result' => 'error', 'reason' => 'Getting tweets failed.']);

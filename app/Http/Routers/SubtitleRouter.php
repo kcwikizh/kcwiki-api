@@ -10,11 +10,6 @@ $app->get('/subtitles', function() {
   return response()->json($subtitles);
 });
 
-$app->get('/purge', function() {
-    Cache::flush();
-    return 'Purge Success';
-});
-
 $app->get('/subtitles/version', function() {
    return response()->json(['version' => SubtitleCache::getLatest()])->header('Access-Control-Allow-Origin', '*');
 });

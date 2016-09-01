@@ -2,7 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent;
+use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent, App\MapMaxHp;
 use App\Util;
 
 // Reporter API
@@ -164,6 +164,27 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
         'eventType' => $inputs['eventType'],
         'count' => $inputs['count'],
         'dantan' => $dantan
+    ]);
+    return response()->json(['result' => 'success']);
+}]);
+
+$app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $request) {
+    $rules = [
+        'mapAreaId' => 'required|digits_between:1,3',
+        'mapId' => 'required|digits_between:1,3',
+        'maxHp' => 'required|digits_between:1,10',
+        'lv' => 'required|digits_between:1,4'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
+    }
+    $inputs = $request->all();
+    MapMaxHp::create([
+        'mapAreaId' => $inputs['mapAreaId'],
+        'mapId' => $inputs['mapId'],
+        'maxHp' => $inputs['maxHp'],
+        'lv' => $inputs['lv']
     ]);
     return response()->json(['result' => 'success']);
 }]);

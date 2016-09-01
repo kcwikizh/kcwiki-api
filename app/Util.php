@@ -53,11 +53,86 @@ class Util {
         return Cache::get($key);
     }
 
+
+    static public function exists($path, $driver='local') {
+        return Storage::disk($driver)->exists($path);
+    }
+
+    /**
+     * Retrieve the json object from the disk
+     *
+     * @param string $path
+     * @param string $driver [optional]
+     * @return mixed json object
+    */
     static public function load($path, $driver='local') {
         return json_decode(Storage::disk($driver)->get($path), true);
     }
 
+    /**
+     * Store the json object on the disk
+     *
+     * @param string $path
+     * @param mixed $data
+     * @param string $driver [optional]
+    */
     static public function dump($path, $data, $driver='local') {
         Storage::disk($driver)->put($path, json_encode($data));
     }
+
+    /**
+     * Get raw file contents
+     *
+     * @param string $path
+     * @param string $driver [optional]
+     * @return string $contents
+    */
+    static public function read($path, $driver='local') {
+        return Storage::disk($driver)->get($path);
+    }
+
+    /**
+     * Store raw file contents
+     *
+     * @param string $path
+     * @param string $raw
+     * @param string $driver [optional]
+    */
+    static public function write($path, $raw, $driver='local') {
+        Storage::disk($driver)->put($path, $raw);
+    }
+
+    /**
+     * @param mixed $srcJson
+     * @param mixed $dstJson
+     * @return bool
+    */
+    static public function compareJson($srcJson, $dstJson) {
+        if (!is_array($srcJson) && !is_array($dstJson)) return ($srcJson === $dstJson);
+        if (!is_array($srcJson) && is_array($dstJson) || is_array($srcJson) && !is_array($dstJson))
+            return false;
+        foreach ($srcJson as $key => $value) {
+            if (!array_key_exists($key, $dstJson))
+                return false;
+            if (is_array($value)) {
+                if (!is_array($dstJson[$key])) return false;
+                if (Util::compareJson($srcJson[$key], $dstJson[$key]))
+                    continue;
+                else
+                    return false;
+            }
+            if ($value !== $dstJson[$key])
+                return false;
+        }
+        return true;
+    }
+
+    static public function successResponse() {
+        return response()->json(['result' => 'success']);
+    }
+
+    static public function errorResponse($reason) {
+        return response()->json(['result' => 'error', 'reason' => $reason]);
+    }
 }
+

@@ -3,8 +3,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\Enemy;
@@ -61,67 +59,7 @@ $app->get('/tweet/{count:\d{1,3}}', ['uses' => 'TweetController@getExtracted']);
 $app->get('/tweet/html/{count:\d{1,3}}', ['uses' => 'TweetController@getHtml']);
 $app->get('/tweet/plain/{count:\d{1,3}}', ['uses' => 'TweetController@getPlain']);
 
-// Api Start2
-$app->post('/start2/upload', function(Request $request) {
-    $rules = [
-        'password' => 'required|alpha_dash|between:5,50',
-        'data' => 'required|json'
-    ];
-    $validator = Validator::make($request->all(), $rules);
-    if ($validator->fails()) {
-        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
-    }
-    $inputs = $request->all();
-    if (env('ADMIN_PASSWORD', 'admin') !== $inputs['password'])
-        return response()->json(['result' => 'error', 'reason' => 'Incorrect password']);
-    Storage::disk('local')->put('api_start2.json', $inputs['data']);
-    $datetime = new DateTime();
-    $today = $datetime->format('Ymd');
-    Storage::disk('local')->put("start2/$today.json", $inputs['data']);
-    Queue::push(function ($job) {
-        Artisan::call('parse:start2');
-        $job->delete();
-    });
-    return response()->json(['result' => 'success']);
-});
 
-$app->get('/start2', function() {
-   try {
-      $data = Storage::disk('local')->get('api_start2.json');
-      return response($data)->header('Content-Type', 'application/json');
-   } catch (FileNotFoundException $e) {
-      return response()->json(['result' => 'error', 'reason' => 'api_start2.json not found in server']);
-   }
-});
-
-$app->get('/start2/archives', function() {
-    $files = Storage::disk('local')->files('start2');
-    $list = [];
-    $matches = [];
-    foreach($files as $file) {
-        preg_match('/\d{8}/', $file, $matches);
-        if (count($matches) > 0) array_push($list, $matches[0]);
-    }
-    return response()->json($list);
-});
-
-$app->get('/start2/prev', function() {
-    $files = Storage::disk('local')->files('start2');
-    if (count($files) < 1) return response()->json(['result' => 'error', 'reason' => 'There is no start2 data in server']);
-    $file = $files[max(count($files) - 2, 0)];
-    $data = Storage::disk('local')->get($file);
-    return response($data)->header('Content-Type', 'application/json');
-});
-
-$app->get('/start2/{version:\d{8}}', function($version) {
-    $file = 'start2/'.$version.'.json';
-    try {
-        $data = Storage::disk('local')->get($file);
-        return response($data)->header('Content-Type', 'application/json');
-    } catch (FileNotFoundException $e) {
-        return response()->json(['result' => 'error', 'reason' => "start2($version) not found in server"]);
-    }
-});
 
 $app->get('/servers',function(){
     try {

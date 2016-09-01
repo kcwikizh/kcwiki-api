@@ -28,7 +28,7 @@ $app->post('/start2/upload', function(Request $request) {
     }
     Util::dump('api_start2.json', $start2);
     $datetime = new DateTime();
-    $today = $datetime->format('YmdHi');
+    $today = $datetime->format('YmdH');
     Util::dump("start2/$today.json", $start2);
     Queue::push(function ($job) {
         Artisan::call('parse:start2');

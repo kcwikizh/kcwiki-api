@@ -58,10 +58,10 @@ class TweetController extends BaseController
                 }
                 $p = $dom->find('p, div');
                 $plength = count($p);
-                $new_post['jp'] = $p[0]->outerHtml;
+                $new_post['jp'] = $p[0]->innerHtml;
                 $new_post['zh'] = '';
                 for ($i=1; $i < $plength; $i++) {
-                    $new_post['zh'] .= $p[$i]->outerHtml;
+                    $new_post['zh'] .= $p[$i]->innerHtml;
                 }
                 $new_post['date'] = $post['date'];
                 if ($option == 'plain') {

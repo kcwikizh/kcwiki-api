@@ -56,7 +56,7 @@ class TweetController extends BaseController
                 } else if ($option != 'html') {
                     $new_post['img'] = '';
                 }
-                $p = $dom->find('p');
+                $p = $dom->find('p, div');
                 $plength = count($p);
                 $new_post['jp'] = $p[0]->outerHtml;
                 $new_post['zh'] = '';

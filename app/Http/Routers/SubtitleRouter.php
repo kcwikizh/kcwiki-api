@@ -120,7 +120,7 @@ $app->get('/subtitle/detail/{id:\d{1,4}}', ['middleware' => 'cache', function($i
             $md5 = md5($filename);
             $dir = substr($md5,0,1);
             $subdir = substr($md5,0,2);
-            $item['url'] = "http://kc.6candy.com/commons/$dir/$subdir/$filename";
+            $item['url'] = "https://kc.6candy.com/commons/$dir/$subdir/$filename";
             $item['scene'] = Util::$vcScenes[$voiceId];
             $item['voiceId'] = $voiceId;
             array_push($result, $item);

@@ -136,7 +136,7 @@ class ParseStart2 extends Command
         // extract ship filename
         $filename_list = [];
         foreach ($kcdata as $i => $ship)
-            if (array_key_exists('filename', $ship)) {
+            if (array_key_exists('filename', $ship) && array_key_exists('id', $ship)) {
                 $filename = [];
                 $filename['filename'] = $ship['filename'];
                 $filename['file_version'] = $ship['file_version'];

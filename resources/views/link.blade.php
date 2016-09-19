@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <style>
         .ui.blue.segment { margin-top: 100px; padding-bottom: 0px; }
+        .ui.list a { text-align: left; }
         body { background-color: #E8ECF2; }
     </style>
 </head>
@@ -57,7 +58,5 @@
             </div>
         </div>
     </div>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/semantic.min.js"></script>
 </body>
 </html>

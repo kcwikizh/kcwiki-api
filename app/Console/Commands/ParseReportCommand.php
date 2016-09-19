@@ -79,6 +79,13 @@ class ParseReport extends Command
     private function handleNewShip() {
         $missing = ['min' => [], 'max' => []];
         $results = [];
+        $this->new = [];
+        $ships = Util::load("ship/all.json");
+        foreach ($ships as $ship) {
+            if (array_key_exists('id', $ship)) {
+                array_push($this->new, $ship['id']);
+            }
+        }
         foreach ($this->new as $new) {
             try {
                 $ship = Util::load("ship/$new.json");

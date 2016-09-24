@@ -28,7 +28,7 @@ class TweetController extends BaseController
         $key = "tweet.$option.$count";
         $tag = "tweet";
         if (Cache::tags($tag)->has($key)) return response(Cache::tags($tag)->get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
-        $rep = file_get_contents("http://t.kcwiki.moe/?json=1&count=$count");
+        $rep = file_get_contents("https://t.kcwiki.moe/?json=1&count=$count");
         if ($rep) {
             $result = json_decode($rep, true);
             $posts = $result['posts'];

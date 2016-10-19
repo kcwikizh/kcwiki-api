@@ -71,7 +71,7 @@ $app->get('/servers',function(){
 });
 
 $app->get('/avatar/latest', ['middleware' => 'cache', function() {
-    $raw = file_get_contents('http://static.kcwiki.moe/Avatar/archives.json');
+    $raw = file_get_contents('https://static.kcwiki.moe/Avatar/archives.json');
     $archives = json_decode($raw, true);
     $base = 'http://static.kcwiki.moe/Avatar/';
     $latest = array_slice($archives, -1)[0];
@@ -79,7 +79,7 @@ $app->get('/avatar/latest', ['middleware' => 'cache', function() {
 }]);
 
 $app->get('/avatars', ['middleware' => 'cache', function() {
-    $raw = file_get_contents('http://static.kcwiki.moe/Avatar/archives.json');
+    $raw = file_get_contents('https://static.kcwiki.moe/Avatar/archives.json');
     $archives = json_decode($raw, true);
     $base = 'http://static.kcwiki.moe/Avatar/';
     return response()->json([

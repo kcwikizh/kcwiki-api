@@ -57,10 +57,13 @@ class TweetController extends BaseController
                     $new_post['img'] = '';
                 }
                 $p = $dom->find('p, div');
-                $plength = count($p);
-                $new_post['jp'] = $p[0]->innerHtml;
+                $new_post['jp'] = '';
                 $new_post['zh'] = '';
-                for ($i=1; $i < $plength; $i++) {
+                $n = $this->detect($p);
+                for ($i=0; $i <= $n; $i++) {
+                    $new_post['jp'] .= $p[$i]->innerHtml;
+                }
+                for ($i=$n+1; $i < count($p); $i++) {
                     $new_post['zh'] .= $p[$i]->innerHtml;
                 }
                 $new_post['date'] = $post['date'];
@@ -77,4 +80,14 @@ class TweetController extends BaseController
         }
     }
 
+    private function detect($paragraphs) {
+        for ($i=0; $i < count($paragraphs); $i++) {
+            $p = $paragraphs[$i]->innerHtml;
+            $text = strip_tags($p);
+            if (preg_match('/#艦これ/', $text)) {
+                return $i;
+            }
+        }
+        return 0;
+    }
 }

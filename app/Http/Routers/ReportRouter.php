@@ -19,13 +19,13 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-    Tyku::create([
-       'mapAreaId' => $request->input('mapAreaId'),
-       'mapId' => $request->input('mapId'),
-       'cellId' => $request->input('cellId'),
-       'tyku' => $request->input('tyku'),
-       'rank' => $request->input('rank')
-    ]);
+//    Tyku::create([
+//       'mapAreaId' => $request->input('mapAreaId'),
+//       'mapId' => $request->input('mapId'),
+//       'cellId' => $request->input('cellId'),
+//       'tyku' => $request->input('tyku'),
+//       'rank' => $request->input('rank')
+//    ]);
     return response()->json(['result'=>'success']);
 }]);
 
@@ -40,12 +40,12 @@ $app->post('/path', ['middleware' => 'report-cache', function(Request $request) 
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-    Path::create([
-       'mapAreaId' => $request->input('mapAreaId'),
-       'mapId' => $request->input('mapId'),
-       'path' => json_encode($request->input('path')),
-       'decks' => json_encode($request->input('decks'))
-    ]);
+//    Path::create([
+//       'mapAreaId' => $request->input('mapAreaId'),
+//       'mapId' => $request->input('mapId'),
+//       'path' => json_encode($request->input('path')),
+//       'decks' => json_encode($request->input('decks'))
+//    ]);
     return response()->json(['result'=>'success']);
 }]);
 

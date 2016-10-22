@@ -26,7 +26,7 @@ class CacheMiddleware
             return response(Cache::tags($tag)->get($uri))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
         try {
             $response = $next($request);
-            Cache::tags($tag)->forever($uri, $response->getContent());
+            Cache::tags($tag)->put($uri, $response->getContent(), 5);
         } catch (FileNotFoundException $e) {
             $response = response()->json(['result'=>'error', 'reason'=>'data not found.']);
         }

@@ -136,3 +136,10 @@ API for kancolle game data. Powered By Lumen
 ## 4. API Doc
 
 本服务的具体开放API请[参考](https://github.com/kcwikizh/kcwiki-api/wiki)
+
+## 5. FAQ
+
+### 5.1 在使用 Artisan 时出现形如 `Class App\Console\Commands\ParseStart2 does not exist` 的错误？
+
+尝试运行命令 `composer dumpautoload -o`
+

@@ -39,6 +39,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        if (env('APP_DEBUG')) {
+            return parent::render($request, $e);
+        } else {
+            return response()->json(['error' => 'some errors occurred, maybe your request url is invalid']);
+        }
     }
 }

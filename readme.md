@@ -17,6 +17,8 @@ API for kancolle game data. Powered By Lumen
   - [3.3 parse:db](#33-parsedb)
   - [3.4 parse:lua](#34-parselua)
 - [4. API Doc](#4-api-doc)
+- [5. FAQ](#5-faq)
+  - [5.1 在使用 Artisan 时出现形如 `Class App\Console\Commands\ParseStart2 does not exist` 的错误？](#51-%E5%9C%A8%E4%BD%BF%E7%94%A8-artisan-%E6%97%B6%E5%87%BA%E7%8E%B0%E5%BD%A2%E5%A6%82-class-app%5Cconsole%5Ccommands%5Cparsestart2-does-not-exist-%E7%9A%84%E9%94%99%E8%AF%AF%EF%BC%9F)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

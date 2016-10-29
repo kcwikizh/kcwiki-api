@@ -13,19 +13,21 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
         'cellId' => 'required|digits_between:1,3',
         'tyku' => 'required|digits_between:1,4',
         'rank' => 'required|size:1',
+        'seiku' => 'required|digits_between:-1,4',
         'version' => 'required'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-//    Tyku::create([
-//       'mapAreaId' => $request->input('mapAreaId'),
-//       'mapId' => $request->input('mapId'),
-//       'cellId' => $request->input('cellId'),
-//       'tyku' => $request->input('tyku'),
-//       'rank' => $request->input('rank')
-//    ]);
+   Tyku::create([
+      'mapAreaId' => $request->input('mapAreaId'),
+      'mapId' => $request->input('mapId'),
+      'cellId' => $request->input('cellId'),
+      'tyku' => $request->input('tyku'),
+      'seiku' => $request->input('seiku'),
+      'rank' => $request->input('rank')
+   ]);
     return response()->json(['result'=>'success']);
 }]);
 
@@ -145,9 +147,9 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
         'cellId' => 'required|digits_between:1,3',
-        'eventId' => 'required|digits_between:1,2',
+        'eventId' => 'required|array',
         'eventType' => 'required|digits_between:1,2',
-        'count' => 'required|digits_between:1,3',
+        'count' => 'required|array',
         'dantan' => 'boolean'
     ];
     $validator = Validator::make($request->all(), $rules);

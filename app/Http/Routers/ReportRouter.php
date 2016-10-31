@@ -20,7 +20,7 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-   Tyku::create([
+    Tyku::create([
       'mapAreaId' => $request->input('mapAreaId'),
       'mapId' => $request->input('mapId'),
       'cellId' => $request->input('cellId'),
@@ -156,17 +156,21 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-    $inputs = $request->all();
-    $dantan = array_key_exists('dantan', $inputs) ? $inputs['dantan'] : false;
-    MapEvent::create([
-        'mapAreaId' => $inputs['mapAreaId'],
-        'mapId' => $inputs['mapId'],
-        'cellId' => $inputs['cellId'],
-        'eventId' => json_encode($request->input('eventId')),
-        'eventType' => $inputs['eventType'],
-        'count' => json_encode($request->input('count')),
-        'dantan' => $dantan
-    ]);
+    $events = $request->input('eventId');
+    $counts = $request->input('count');
+    for ($i = 0; $i < count($events); $i++) {
+        $inputs = $request->all();
+        $dantan = array_key_exists('dantan', $inputs) ? $inputs['dantan'] : false;
+        MapEvent::create([
+            'mapAreaId' => $inputs['mapAreaId'],
+            'mapId' => $inputs['mapId'],
+            'cellId' => $inputs['cellId'],
+            'eventId' => $events[$i],
+            'eventType' => $inputs['eventType'],
+            'count' => $counts[$i],
+            'dantan' => $dantan
+        ]);
+    }
     return response()->json(['result' => 'success']);
 }]);
 

@@ -19,7 +19,6 @@ class CreateTykuTable extends Migration
             $table->integer('cellId');
             $table->integer('tyku');
             $table->char('rank', 1);
-            $table->integer('seiku');
             $table->timestamps();
         });
     }

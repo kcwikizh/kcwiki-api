@@ -25,8 +25,8 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
       'mapId' => $request->input('mapId'),
       'cellId' => $request->input('cellId'),
       'tyku' => $request->input('tyku'),
-      'seiku' => $request->input('seiku'),
-      'rank' => $request->input('rank')
+      'rank' => $request->input('rank'),
+      'seiku' => $request->input('seiku')
    ]);
     return response()->json(['result'=>'success']);
 }]);
@@ -59,7 +59,7 @@ $app->post('/enemy', ['middleware' => 'report-cache', function(Request $request)
         'param' => 'required|array',
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
-        'cellId' => 'required|digits_between:1,3'
+        'mapAreaId' => 'required|digits_between:1,3'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
@@ -68,7 +68,7 @@ $app->post('/enemy', ['middleware' => 'report-cache', function(Request $request)
     EnemyFleet::create([
         'mapAreaId' => $request->input('mapAreaId'),
         'mapId' => $request->input('mapId'),
-        'cellId' => $request->input('cellId'),
+        'mapAreaId' => $request->input('cellId'),
         'fleets' => json_encode($request->input('enemyId'))
     ]);
     $enemies = $request->input('enemyId');
@@ -162,9 +162,9 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
         'mapAreaId' => $inputs['mapAreaId'],
         'mapId' => $inputs['mapId'],
         'cellId' => $inputs['cellId'],
-        'eventId' => $inputs['eventId'],
+        'eventId' => json_encode($request->input('eventId')),
         'eventType' => $inputs['eventType'],
-        'count' => $inputs['count'],
+        'count' => json_encode($request->input('count')),
         'dantan' => $dantan
     ]);
     return response()->json(['result' => 'success']);

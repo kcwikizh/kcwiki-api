@@ -59,7 +59,7 @@ $app->post('/enemy', ['middleware' => 'report-cache', function(Request $request)
         'param' => 'required|array',
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
-        'mapAreaId' => 'required|digits_between:1,3'
+        'cellId' => 'required|digits_between:1,3'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {

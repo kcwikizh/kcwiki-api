@@ -13,7 +13,7 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
         'cellId' => 'required|digits_between:1,3',
         'tyku' => 'required|digits_between:1,4',
         'rank' => 'required|size:1',
-        'seiku' => 'required|digits_between:-1,4',
+        'seiku' => 'required|digits_between:1,4',
         'version' => 'required'
     ];
     $validator = Validator::make($request->all(), $rules);
@@ -68,7 +68,7 @@ $app->post('/enemy', ['middleware' => 'report-cache', function(Request $request)
     EnemyFleet::create([
         'mapAreaId' => $request->input('mapAreaId'),
         'mapId' => $request->input('mapId'),
-        'mapAreaId' => $request->input('cellId'),
+        'cellId' => $request->input('cellId'),
         'fleets' => json_encode($request->input('enemyId'))
     ]);
     $enemies = $request->input('enemyId');
@@ -158,8 +158,8 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
     }
     $events = $request->input('eventId');
     $counts = $request->input('count');
+    $inputs = $request->all();
     for ($i = 0; $i < count($events); $i++) {
-        $inputs = $request->all();
         $dantan = array_key_exists('dantan', $inputs) ? $inputs['dantan'] : false;
         MapEvent::create([
             'mapAreaId' => $inputs['mapAreaId'],

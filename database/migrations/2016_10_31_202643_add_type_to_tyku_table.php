@@ -25,7 +25,7 @@ class AddTypeToTykuTable extends Migration
     public function down()
     {
         Schema::table('tyku', function (Blueprint $table) {
-            $table->dropColumn(['siku']);
+            $table->dropColumn(['seiku']);
         });
     }
 }

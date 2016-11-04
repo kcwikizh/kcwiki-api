@@ -68,8 +68,8 @@ class TweetController extends BaseController
                 }
                 $new_post['date'] = $post['date'];
                 if ($option == 'plain') {
-                    $new_post['zh'] = strip_tags($new_post['zh']);
-                    $new_post['jp'] = strip_tags($new_post['jp']);
+                    $new_post['zh'] = strip_tags($this->expandUrl($new_post['zh']));
+                    $new_post['jp'] = strip_tags($this->expandUrl($new_post['jp']));
                 }
                 array_push($output, $new_post);
             }
@@ -78,6 +78,10 @@ class TweetController extends BaseController
         } else {
             return response()->json(['result' => 'error', 'reason' => 'Getting tweets failed.']);
         }
+    }
+
+    private function expandUrl($html) {
+        return str_replace('http://','',preg_replace('/<a[^>]*?href\s*=\s*"([^"]*?)"[^>]*?>[^こ<]*?<\/a>/', '\1', $html));
     }
 
     private function detect($paragraphs) {

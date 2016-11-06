@@ -61,6 +61,8 @@ API for kancolle game data. Powered By Lumen
 
 有关配置文件的说明请[参考](https://lumen.laravel.com/docs/5.2/configuration#environment-configuration)
 
+> 注意 APP_KEY 的配置，默认可能需要 32 位。
+
 ### 2.2 Writable folder
 
 需要将`storage`文件夹赋予写权限
@@ -106,7 +108,7 @@ API for kancolle game data. Powered By Lumen
 
 结合 [kcdata](https://github.com/kcwikizh/kcdata) 与`api_start2.json`生成各个API需要的ship、slotitem、map等源数据
 
-需要在使用[poi-plugin-dev-helper](https://github.com/grzhan/poi-plugin-dev-helper)等方法上传start2数据文件后使用，或者手工将`api_start2.json`放到`storage/app/`目录下
+需要从`api.kcwiki.moe/start2`或者使用[kcwiki-scripts](https://github.com/grzhan/kcwiki-scripts)来获取start2数据文件，并以`api_start2.json`命名放在`storage/app`文件夹下。
 
 这个命令将会影响`ship/`、`slotitem/`、`map/`等API的使用与更新
 

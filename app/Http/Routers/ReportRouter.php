@@ -11,22 +11,24 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
         'cellId' => 'required|digits_between:1,3',
-        'tyku' => 'required|digits_between:1,4',
+        'maxTyku' => 'required|digits_between:1,4',
+        'minTyku' => 'required|digits_between:1,4',
+        'seiku' => 'required|digits_between:1,2',
         'rank' => 'required|size:1',
-        'seiku' => 'required|digits_between:1,4',
         'version' => 'required'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-    Tyku::create([
+   Tyku::create([
       'mapAreaId' => $request->input('mapAreaId'),
       'mapId' => $request->input('mapId'),
       'cellId' => $request->input('cellId'),
-      'tyku' => $request->input('tyku'),
-      'rank' => $request->input('rank'),
-      'seiku' => $request->input('seiku')
+      'maxTyku' => $request->input('maxTyku'),
+      'minTyku' => $request->input('minTyku'),
+      'seiku' => $request->input('seiku'),
+      'rank' => $request->input('rank')
    ]);
     return response()->json(['result'=>'success']);
 }]);
@@ -156,18 +158,16 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-    $events = $request->input('eventId');
-    $counts = $request->input('count');
     $inputs = $request->all();
-    for ($i = 0; $i < count($events); $i++) {
-        $dantan = array_key_exists('dantan', $inputs) ? $inputs['dantan'] : false;
+    $dantan = array_key_exists('dantan', $inputs) ? $inputs['dantan'] : false;
+    foreach ($inputs['eventId'] as $eventno => $event) {
         MapEvent::create([
             'mapAreaId' => $inputs['mapAreaId'],
             'mapId' => $inputs['mapId'],
             'cellId' => $inputs['cellId'],
-            'eventId' => $events[$i],
+            'eventId' => $event,
             'eventType' => $inputs['eventType'],
-            'count' => $counts[$i],
+            'count' => $inputs['count'][$eventno],
             'dantan' => $dantan
         ]);
     }

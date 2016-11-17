@@ -205,3 +205,8 @@ $app->get('/report/new', ['middleware' => 'cache', function() {
     $raw = Util::load('report/new.json');
     return $raw;
 }]);
+
+$app->get('/report/tyku', ['middleware' => 'cache', function() {
+    $raw = Util::load('report/tyku.json');
+    return $raw;
+}]);

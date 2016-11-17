@@ -21,13 +21,15 @@ class ParseReport extends Command
 
     public function handle()
     {
-        $this->slotitems = Util::load('slotitem/all.json');
+        $this->slotitems = Util::load('slotitem/type/all.json');
         switch ($this->argument('option')) {
             case 'enemy':
                 $this->handleEnemies();
                 break;
             case 'new':
                 $this->handleNewShip();
+            case 'tyku':
+                $this->handleTyku();
         }
     }
 
@@ -143,6 +145,33 @@ class ParseReport extends Command
             $this->error("$name min attributes is missing");
         }
         $this->info('Done.');
+    }
+
+    private function handleTyku() {
+        $results = [];
+        $rows = DB::select('select mapId,mapAreaId,cellId from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
+        foreach ($rows as $r) {
+            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
+                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
+            if($maxTyku[0]->count == 0) {
+                $maxTyku = DB::select("select min(maxTyku) as max,count(*) as count from tyku where (seiku=1 or seiku=2 or seiku=0) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
+                    ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
+                if($maxTyku[0]->count == 0) {
+                    $maxTyku = -1;
+                } else {
+                    $maxTyku = $maxTyku[0]->max;
+                }
+            } else {
+                $maxTyku = $maxTyku[0]->max +1;
+            }
+            array_push($results, [
+                'mapId' => $r->mapId,
+                'mapAreaId' => $r->mapAreaId,
+                'cellId' => $r->cellId,
+                'tyku' => $maxTyku
+            ]);
+        }
+        Util::dump('report/tyku.json', $results);
     }
 
     private function getSlotItemNameById($id) {

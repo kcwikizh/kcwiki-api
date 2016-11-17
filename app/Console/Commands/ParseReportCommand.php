@@ -149,7 +149,7 @@ class ParseReport extends Command
 
     private function handleTyku() {
         $results = [];
-        $rows = DB::select('select mapId,mapAreaId,cellId from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
+        $rows = DB::select('select mapId,mapAreaId,cellId,count(*) as count from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
         foreach ($rows as $r) {
             $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
                 ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
@@ -168,7 +168,8 @@ class ParseReport extends Command
                 'mapId' => $r->mapId,
                 'mapAreaId' => $r->mapAreaId,
                 'cellId' => $r->cellId,
-                'tyku' => $maxTyku
+                'tyku' => $maxTyku,
+                'count' => $r->count
             ]);
         }
         Util::dump('report/tyku.json', $results);

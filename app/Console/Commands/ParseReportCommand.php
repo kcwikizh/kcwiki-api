@@ -21,7 +21,7 @@ class ParseReport extends Command
 
     public function handle()
     {
-        // $this->slotitems = Util::load('slotitem/all.json');
+        $this->slotitems = Util::load('slotitem/all.json');
         switch ($this->argument('option')) {
             case 'enemy':
                 $this->handleEnemies();

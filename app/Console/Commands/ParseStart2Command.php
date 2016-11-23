@@ -210,7 +210,7 @@ class ParseStart2 extends Command
         }
         Storage::disk('local')->put('slotitem/type/all.json', json_encode($slottypes));
         // extract slotitems
-        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua slotitem');
+//        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua slotitem');
         $slotitem_chinese_name = json_decode(Storage::disk('local')->get('slotitem/chinese_name/all.json'), true);
         $slotitems = [];
         $slotitems_common = [];

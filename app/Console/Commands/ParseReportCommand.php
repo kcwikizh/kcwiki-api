@@ -17,7 +17,7 @@ class ParseReport extends Command
     private $enemies = ["重巡夏姫", "港湾夏姫", "港湾夏姫-壊", "潜水夏姫", "戦艦夏姫"];
 
     // Target new ships (Ship ID)
-    private $new = [439, 364, 444, 365, 481, 366, 483, 367];
+    private $new = [433, 438, 457, 369, 472, 370, 491, 372];
 
     public function handle()
     {
@@ -81,13 +81,13 @@ class ParseReport extends Command
     private function handleNewShip() {
         $missing = ['min' => [], 'max' => []];
         $results = [];
-        $this->new = [];
-        $ships = Util::load("ship/all.json");
-        foreach ($ships as $ship) {
-            if (array_key_exists('id', $ship)) {
-                array_push($this->new, $ship['id']);
-            }
-        }
+//        $this->new = [];
+//        $ships = Util::load("ship/all.json");
+//        foreach ($ships as $ship) {
+//            if (array_key_exists('id', $ship)) {
+//                array_push($this->new, $ship['id']);
+//            }
+//        }
         foreach ($this->new as $new) {
             try {
                 $ship = Util::load("ship/$new.json");
@@ -145,6 +145,10 @@ class ParseReport extends Command
             $this->error("$name min attributes is missing");
         }
         $this->info('Done.');
+    }
+
+    private function handleNewShipSlotitem() {
+
     }
 
     private function handleTyku() {

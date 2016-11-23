@@ -111,7 +111,7 @@ class ParseStart2 extends Command
         $start2itemshop = $start2data['api_mst_item_shop'];
         $start2maparea = $start2data['api_mst_maparea'];
         $start2mapinfo = $start2data['api_mst_mapinfo'];
-        $start2mapcell = $start2data['api_mst_mapcell'];
+//        $start2mapcell = $start2data['api_mst_mapcell'];
         $start2mission = $start2data['api_mst_mission'];
         $start2mapbgm = $start2data['api_mst_mapbgm'];
         $start2bgm = $start2data['api_mst_bgm'];
@@ -210,7 +210,7 @@ class ParseStart2 extends Command
         }
         Storage::disk('local')->put('slotitem/type/all.json', json_encode($slottypes));
         // extract slotitems
-//        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua slotitem');
+        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua', ['option' => 'slotitem']);
         $slotitem_chinese_name = json_decode(Storage::disk('local')->get('slotitem/chinese_name/all.json'), true);
         $slotitems = [];
         $slotitems_common = [];
@@ -317,56 +317,56 @@ class ParseStart2 extends Command
         $mihashmap = [];
         // Parse maparea data
         // maparea ==> mapinfo ==> mapcell
-        foreach ($start2maparea as $i => $maparea) {
-            $area = [];
-            foreach ($maparea as $key => $value) {
-                $area[substr($key, 4)] = $value;
-            }
-            $mihashmap[$area['id']] = $i;
-            array_push($maps, $area);
-        }
+//        foreach ($start2maparea as $i => $maparea) {
+//            $area = [];
+//            foreach ($maparea as $key => $value) {
+//                $area[substr($key, 4)] = $value;
+//            }
+//            $mihashmap[$area['id']] = $i;
+//            array_push($maps, $area);
+//        }
 
         // Parse mapinfo data
-        $mchashmap = [];
-        foreach ($start2mapinfo as $mapinfo) {
-            $maparea_id = $mapinfo['api_maparea_id'];
-            $maparea = &$maps[$mihashmap[$maparea_id]];
-            if (!array_key_exists('mapinfo', $maparea)) {
-                $maparea['mapinfo'] = [];
-            }
-            $info = [];
-            foreach ($mapinfo as $key => $value) {
-                if (array_key_exists($key, $this->mapinfo_names)) {
-                    $info[$this->mapinfo_names[$key]] = $value;
-                } else {
-                    $info[substr($key, 4)] = $value;
-                }
-            }
-            array_push($maparea['mapinfo'], $info);
-            $mchashmap[$info['id']] = [$mihashmap[$maparea_id], count($maparea['mapinfo']) - 1];
-        }
+//        $mchashmap = [];
+//        foreach ($start2mapinfo as $mapinfo) {
+//            $maparea_id = $mapinfo['api_maparea_id'];
+//            $maparea = &$maps[$mihashmap[$maparea_id]];
+//            if (!array_key_exists('mapinfo', $maparea)) {
+//                $maparea['mapinfo'] = [];
+//            }
+//            $info = [];
+//            foreach ($mapinfo as $key => $value) {
+//                if (array_key_exists($key, $this->mapinfo_names)) {
+//                    $info[$this->mapinfo_names[$key]] = $value;
+//                } else {
+//                    $info[substr($key, 4)] = $value;
+//                }
+//            }
+//            array_push($maparea['mapinfo'], $info);
+//            $mchashmap[$info['id']] = [$mihashmap[$maparea_id], count($maparea['mapinfo']) - 1];
+//        }
         // Parse mapcell data
-        foreach ($start2mapcell as $mapcell) {
-            $mapinfo_id = $mapcell['api_map_no'];
-            $mapinfo = &$maps[$mchashmap[$mapinfo_id][0]]['mapinfo'][$mchashmap[$mapinfo_id][1]];
-            if (!array_key_exists('mapcell', $mapinfo)) {
-                $mapinfo['mapcell'] = [];
-            }
-            $cell = [];
-            foreach ($mapcell as $key => $value) {
-                $cell[substr($key, 4)] = $value;
-            }
-            array_push($mapinfo['mapcell'], $cell);
-        }
-        foreach ($maps as $map) {
-            $id = $map['id'];
-            Storage::disk('local')->put("map/area/$id.json", json_encode($map));
-            foreach($map['mapinfo'] as $mapinfo) {
-                $id = $mapinfo['id'];
-                Storage::disk('local')->put("map/info/$id.json", json_encode($mapinfo));
-            }
-        }
-        Storage::disk('local')->put('map/all.json', json_encode($maps));
+//        foreach ($start2mapcell as $mapcell) {
+//            $mapinfo_id = $mapcell['api_map_no'];
+//            $mapinfo = &$maps[$mchashmap[$mapinfo_id][0]]['mapinfo'][$mchashmap[$mapinfo_id][1]];
+//            if (!array_key_exists('mapcell', $mapinfo)) {
+//                $mapinfo['mapcell'] = [];
+//            }
+//            $cell = [];
+//            foreach ($mapcell as $key => $value) {
+//                $cell[substr($key, 4)] = $value;
+//            }
+//            array_push($mapinfo['mapcell'], $cell);
+//        }
+//        foreach ($maps as $map) {
+//            $id = $map['id'];
+//            Storage::disk('local')->put("map/area/$id.json", json_encode($map));
+//            foreach($map['mapinfo'] as $mapinfo) {
+//                $id = $mapinfo['id'];
+//                Storage::disk('local')->put("map/info/$id.json", json_encode($mapinfo));
+//            }
+//        }
+//        Storage::disk('local')->put('map/all.json', json_encode($maps));
 
         // extract mission data
         $this->info('Parsing mission...');

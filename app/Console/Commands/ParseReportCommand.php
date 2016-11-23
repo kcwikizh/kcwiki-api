@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Util;
+use App\InitEquip;
 use DB;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
@@ -28,8 +29,12 @@ class ParseReport extends Command
                 break;
             case 'new':
                 $this->handleNewShip();
+                break;
             case 'tyku':
                 $this->handleTyku();
+                break;
+            case 'newslot':
+                $this->handleNewShipSlotitem();
         }
     }
 
@@ -148,7 +153,22 @@ class ParseReport extends Command
     }
 
     private function handleNewShipSlotitem() {
-
+        foreach ($this->new as $new) {
+            try {
+                $ship = Util::load("ship/$new.json");
+            } catch (FileNotFoundException $e) {
+                $this->error("$new not found..");
+            }
+            $sortno = $ship['sort_no'];
+            $this->info("【{$ship['name']}】");
+            $record = InitEquip::where('sortno', $sortno)->first();
+            $this->info($this->getSlotItemNameById($record->slot1));
+            $this->info($this->getSlotItemNameById($record->slot2));
+            $this->info($this->getSlotItemNameById($record->slot3));
+            $this->info($this->getSlotItemNameById($record->slot4));
+            $this->info($this->getSlotItemNameById($record->slot5));
+        }
+        $this->info('Done.');
     }
 
     private function handleTyku() {

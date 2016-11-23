@@ -15,7 +15,7 @@ class ParseReport extends Command
     protected $description = 'Generate data from kcwiki-report';
 
     // Target enemy ships
-    private $enemies = ["重巡夏姫", "港湾夏姫", "港湾夏姫-壊", "潜水夏姫", "戦艦夏姫"];
+    private $enemies = ["深海海月姫"];
 
     // Target new ships (Ship ID)
     private $new = [433, 438, 457, 369, 472, 370, 491, 372];

@@ -162,11 +162,15 @@ class ParseReport extends Command
             $sortno = $ship['sort_no'];
             $this->info("【{$ship['name']}】");
             $record = InitEquip::where('sortno', $sortno)->first();
-            $this->info($this->getSlotItemNameById($record->slot1));
-            $this->info($this->getSlotItemNameById($record->slot2));
-            $this->info($this->getSlotItemNameById($record->slot3));
-            $this->info($this->getSlotItemNameById($record->slot4));
-            $this->info($this->getSlotItemNameById($record->slot5));
+            if ($record) {
+                $this->info($this->getSlotItemNameById($record->slot1));
+                $this->info($this->getSlotItemNameById($record->slot2));
+                $this->info($this->getSlotItemNameById($record->slot3));
+                $this->info($this->getSlotItemNameById($record->slot4));
+                $this->info($this->getSlotItemNameById($record->slot5));
+            } else {
+                $this->error("database did not has {$ship['name']} data");
+            }
         }
         $this->info('Done.');
     }

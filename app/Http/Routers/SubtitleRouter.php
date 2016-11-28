@@ -65,7 +65,7 @@ $app->get('/subtitles/{id:\d{1,4}}', function($id) {
 
 $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
     $subtitlesRaw = Util::remember('subtitles/distinct', function() {
-        return json_decode(Storage::disk('local')->get('subtitles_distinct.json'), true);
+        return json_decode(Storage::disk('local')->get('subtitles/subtitles_distinct.json'), true);
     });
     $subtitles = $subtitlesRaw['zh'];
     $subtitlesJP = $subtitlesRaw['jp'];

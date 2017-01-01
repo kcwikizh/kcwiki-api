@@ -197,62 +197,64 @@ class ParseStart2 extends Command
         }
         Storage::disk('local')->put('ship/type/all.json', json_encode($shiptypes));
         $this->info('Parsing slot item data..');
+
+        /* FIXME: Start2 slotitem data changed */
         // extract slotitem types
-        $slottypes = [];
-        foreach($start2slottype as $i => $type) {
-            $slottype = [];
-            foreach($type as $key => $value) {
-                $dkey = substr($key, 4);
-                $slottype[$dkey] = $value;
-            }
-            $slottype['chinese_name'] = $this->slotitem_name_chinese[$i];
-            array_push($slottypes, $slottype);
-        }
-        Storage::disk('local')->put('slotitem/type/all.json', json_encode($slottypes));
-        // extract slotitems
-        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua', ['option' => 'slotitem']);
-        $slotitem_chinese_name = json_decode(Storage::disk('local')->get('slotitem/chinese_name/all.json'), true);
-        $slotitems = [];
-        $slotitems_common = [];
-        foreach ($start2slotitem as $i => $item) {
-            $slotitem = [];
-            $slotitem['stats'] = [];
-            $slotitem_common = [];
-            foreach($item as $key => $value)
-                if (array_key_exists($key, $this->slotitem_common_map)) {
-                    $slotitem[$this->slotitem_common_map[$key]] = $value;
-                    $slotitem_common[$this->slotitem_common_map[$key]] = $value;
-                }
-                else if ($key == 'api_broken' || $key == 'api_type') {
-                    $slotitem['type'] = $item['api_type'];
-                    $slotitem['broken'] = $item['api_broken'];
-                } else
-                    $slotitem['stats'][substr($key,4)] = $value;
-            $id = $slotitem['id'];
-            // Hot fix: 515 高速深海鱼雷 ==> 22inch魚雷後期型
-            if ($id == 515) {
-                $slotitem['name'] = '22inch魚雷後期型';
-                $slotitem_common['name'] = '22inch魚雷後期型';
-            }
-            if (array_key_exists($id, $slotitem_chinese_name)) {
-                $slotitem['chinese_name'] = $slotitem_chinese_name[$id];
-                $slotitem_common['chinese_name'] = $slotitem_chinese_name[$id];
-            }
-            $slotitem['image'] = [
-                'card' => "/kcs/resources/image/slotitem/card/{$id}.png",
-                'up' => "/kcs/resources/image/slotitem/item_up/{$id}.png",
-                'on' => "/kcs/resources/image/slotitem/item_on/{$id}.png",
-                'character' => "/kcs/resources/image/slotitem/item_character/{$id}.png"
-            ];
-            $slotitem_common['type'] = $slotitem['type'][2];
-            $slotitem_common['type_name'] = $slottypes[$slotitem_common['type'] - 1]['name'];
-            Storage::disk('local')->put("slotitem/$id.json", json_encode($slotitem_common));
-            Storage::disk('local')->put("slotitem/detail/$id.json", json_encode($slotitem));
-            array_push($slotitems_common, $slotitem_common);
-            array_push($slotitems, $slotitem);
-        }
-        Storage::disk('local')->put("slotitem/detail/all.json", json_encode($slotitems));
-        Storage::disk('local')->put("slotitem/all.json", json_encode($slotitems_common));
+//        $slottypes = [];
+//        foreach($start2slottype as $i => $type) {
+//            $slottype = [];
+//            foreach($type as $key => $value) {
+//                $dkey = substr($key, 4);
+//                $slottype[$dkey] = $value;
+//            }
+//            $slottype['chinese_name'] = $this->slotitem_name_chinese[$i];
+//            array_push($slottypes, $slottype);
+//        }
+//        Storage::disk('local')->put('slotitem/type/all.json', json_encode($slottypes));
+//        // extract slotitems
+//        if (!Storage::disk('local')->has('slotitem/chinese_name/all.json')) Artisan::call('parse:lua', ['option' => 'slotitem']);
+//        $slotitem_chinese_name = json_decode(Storage::disk('local')->get('slotitem/chinese_name/all.json'), true);
+//        $slotitems = [];
+//        $slotitems_common = [];
+//        foreach ($start2slotitem as $i => $item) {
+//            $slotitem = [];
+//            $slotitem['stats'] = [];
+//            $slotitem_common = [];
+//            foreach($item as $key => $value)
+//                if (array_key_exists($key, $this->slotitem_common_map)) {
+//                    $slotitem[$this->slotitem_common_map[$key]] = $value;
+//                    $slotitem_common[$this->slotitem_common_map[$key]] = $value;
+//                }
+//                else if ($key == 'api_broken' || $key == 'api_type') {
+//                    $slotitem['type'] = $item['api_type'];
+//                    $slotitem['broken'] = $item['api_broken'];
+//                } else
+//                    $slotitem['stats'][substr($key,4)] = $value;
+//            $id = $slotitem['id'];
+//            // Hot fix: 515 高速深海鱼雷 ==> 22inch魚雷後期型
+//            if ($id == 515) {
+//                $slotitem['name'] = '22inch魚雷後期型';
+//                $slotitem_common['name'] = '22inch魚雷後期型';
+//            }
+//            if (array_key_exists($id, $slotitem_chinese_name)) {
+//                $slotitem['chinese_name'] = $slotitem_chinese_name[$id];
+//                $slotitem_common['chinese_name'] = $slotitem_chinese_name[$id];
+//            }
+//            $slotitem['image'] = [
+//                'card' => "/kcs/resources/image/slotitem/card/{$id}.png",
+//                'up' => "/kcs/resources/image/slotitem/item_up/{$id}.png",
+//                'on' => "/kcs/resources/image/slotitem/item_on/{$id}.png",
+//                'character' => "/kcs/resources/image/slotitem/item_character/{$id}.png"
+//            ];
+//            $slotitem_common['type'] = $slotitem['type'][2];
+//            $slotitem_common['type_name'] = $slottypes[$slotitem_common['type'] - 1]['name'];
+//            Storage::disk('local')->put("slotitem/$id.json", json_encode($slotitem_common));
+//            Storage::disk('local')->put("slotitem/detail/$id.json", json_encode($slotitem));
+//            array_push($slotitems_common, $slotitem_common);
+//            array_push($slotitems, $slotitem);
+//        }
+//        Storage::disk('local')->put("slotitem/detail/all.json", json_encode($slotitems));
+//        Storage::disk('local')->put("slotitem/all.json", json_encode($slotitems_common));
 
         // extract furniture
         $this->info('Parsing furniture...');

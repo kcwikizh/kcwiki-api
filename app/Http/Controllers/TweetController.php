@@ -10,25 +10,43 @@ class TweetController extends BaseController
 {
     public function getHtml($count)
     {
-        return $this->handle($count, 'html');
+        return $this->handleCount($count, 'html');
     }
 
     public function getExtracted($count)
     {
-        return $this->handle($count, 'extracted');
+        return $this->handleCount($count, 'extracted');
     }
 
     public function getPlain($count)
     {
-        return $this->handle($count, 'plain');
+        return $this->handleCount($count, 'plain');
     }
 
-    private function handle($count, $option)
+    public function getDatePosts($date)
+    {
+        return $this->handleDate($date, 'extracted');
+    }
+
+    private function handleCount($count, $option)
     {
         $key = "tweet.$option.$count";
+        $url = "https://t.kcwiki.moe/?json=1&count=$count";
+        return $this->handle($key, $url, $option);
+    }
+
+    private function handleDate($date, $option)
+    {
+        $key = "tweet.$option.$date";
+        $url = "https://t.kcwiki.moe/api/get_date_posts/?date=$date&count=99";
+        return $this->handle($key, $url, $option);
+    }
+
+    private function handle($key, $url, $option)
+    {
         $tag = "tweet";
         if (Cache::tags($tag)->has($key)) return response(Cache::tags($tag)->get($key))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
-        $rep = file_get_contents("https://t.kcwiki.moe/?json=1&count=$count");
+        $rep = file_get_contents($url);
         if ($rep) {
             $result = json_decode($rep, true);
             $posts = $result['posts'];

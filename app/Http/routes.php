@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\Enemy;
+use App\Optime;
 use App\News;
 
 /*

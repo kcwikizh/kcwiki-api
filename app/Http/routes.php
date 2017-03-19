@@ -58,6 +58,7 @@ $app->get('/logout', function(){
 $app->get('/tweet/{count:\d{1,3}}', ['uses' => 'TweetController@getExtracted']);
 $app->get('/tweet/html/{count:\d{1,3}}', ['uses' => 'TweetController@getHtml']);
 $app->get('/tweet/plain/{count:\d{1,3}}', ['uses' => 'TweetController@getPlain']);
+$app->get('/tweet/date/{date:\d{8}}', ['uses' => 'TweetController@getDatePosts']);
 
 
 

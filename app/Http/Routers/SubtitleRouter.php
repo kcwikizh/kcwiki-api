@@ -63,6 +63,15 @@ $app->get('/subtitles/{id:\d{1,4}}', function($id) {
     }
 });
 
+$app->get('/subtitles/seasonal', function() {
+    $subtitles = SubtitleCache::getSeasonal();
+    if ($subtitles) {
+        return $subtitles;
+    } else {
+        return response()->json(['result' => 'error', 'reason' => 'Subtitles not found']);
+    }
+});
+
 $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
     $subtitlesRaw = Util::remember('subtitles/distinct', function() {
         return json_decode(Storage::disk('local')->get('subtitles/subtitles_distinct.json'), true);

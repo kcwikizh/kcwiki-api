@@ -61,6 +61,12 @@ class SubtitleCache {
         });
     }
 
+    static public function getSeasonal() {
+        return self::remember('seasonal',function() {
+            return json_decode(Storage::disk('local')->get('subtitles/subtitles_seasonal.json'), true);
+        });
+    }
+
     static public function remember($key, $callback) {
         if (!Cache::has($key)) {
             $value = $callback();

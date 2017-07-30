@@ -25,19 +25,19 @@ $app->get('/subtitles/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
     return response()->json($diff);
 });
 
-$app->get('/subtitles/jp/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version) {
+$app->get('/subtitles/{lang:[-a-z]{0,5}}/diff/{version:\d{8}[\dA-Z]{0,2}}', function($version, $lang) {
     if (Cache::has('maintenance') and Cache::get("maintenance") == 'true')
         return response()->json([]);
     try {
-        $diff = SubtitleCache::getDiff($version, 'jp');
+        $diff = SubtitleCache::getDiff($version, $lang);
     } catch (FileNotFoundException $e) {
         return response()->json(['result' => 'error', 'reason' => 'Version not found']);
     }
     return response()->json($diff);
 });
 
-$app->get('/subtitles/jp', function() {
-    $subtitles = SubtitleCache::get('latest', 'jp');
+$app->get('/subtitles/{lang:[-a-z]{0,5}}', function($lang) {
+    $subtitles = SubtitleCache::get('latest', $lang);
     if ($subtitles) {
         return $subtitles;
     } else {
@@ -45,8 +45,8 @@ $app->get('/subtitles/jp', function() {
     }
 });
 
-$app->get('/subtitles/jp/{id:\d{1,4}}', function($id) {
-    $subtitles = SubtitleCache::getByShip($id, 'jp');
+$app->get('/subtitles/{lang:[-a-z]{0,5}}/{id:\d{1,4}}', function($lang, $id) {
+    $subtitles = SubtitleCache::getByShip($id, $lang);
     if ($subtitles) {
         return $subtitles;
     } else {

@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class ParseStart2 extends Command
 {
@@ -403,6 +403,7 @@ class ParseStart2 extends Command
             array_push($bgms, $bgm);
         }
         Storage::disk('local')->put('bgm/all.json', json_encode($bgms));
+        Cahce::flush();
         $this->info('Done.');
     }
 

@@ -403,7 +403,7 @@ class ParseStart2 extends Command
             array_push($bgms, $bgm);
         }
         Storage::disk('local')->put('bgm/all.json', json_encode($bgms));
-        Cahce::flush();
+        Cache::flush();
         $this->info('Done.');
     }
 

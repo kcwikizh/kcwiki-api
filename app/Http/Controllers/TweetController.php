@@ -56,7 +56,7 @@ class TweetController extends BaseController
                 $dom->load($post['content']);
                 $new_post = [];
                 if (array_key_exists('ozh_ta_id', $post['custom_fields']) && is_array($post['custom_fields']['ozh_ta_id']))
-                    $new_post['id'] = $post['custom_fields']['ozh_ta_id'][0];
+                    $new_post['id'] = $post['id'];
                 else
                     $new_post['id'] = '';
                 $img = $dom->find('img');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cache;
 use PHPHtmlParser\Dom;
@@ -26,6 +27,26 @@ class TweetController extends BaseController
     public function getDatePosts($date)
     {
         return $this->handleDate($date, 'extracted');
+    }
+
+    public function getInfo()
+    {
+        if (Cache::tags('tweet')->has('info'))
+            return response(Cache::tags('tweet')->get('info'))->header('Content-Type', 'application/json')->header('Access-Control-Allow-Origin', '*');
+        $raw = file_get_contents('https://static.kcwiki.moe/Avatar/archives.json');
+        $avatars = json_decode($raw, true);
+        if (Storage::disk('local')->has('twitter.info.json')) {
+            $info = json_decode(Storage::disk('local')->get('twitter.info.json'), true);
+        } else {
+            $info = array('name' => '「艦これ」開発/運営');
+        }
+        $base = 'http://static.kcwiki.moe/Avatar/';
+        $avatars = array_map(function($url) use ($base) { return $base.$url;}, $avatars);
+        return response()->json([
+            'name' => $info['name'],
+            'avatars' => $avatars
+        ]);
+
     }
 
     private function handleCount($count, $option)

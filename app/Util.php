@@ -111,6 +111,10 @@ class Util {
         if (!is_array($srcJson) && !is_array($dstJson)) return ($srcJson === $dstJson);
         if (!is_array($srcJson) && is_array($dstJson) || is_array($srcJson) && !is_array($dstJson))
             return false;
+        foreach ($dstJson as $key => $value) {
+            if (!array_key_exists($key, $srcJson))
+                return false;
+        }
         foreach ($srcJson as $key => $value) {
             if (!array_key_exists($key, $dstJson))
                 return false;

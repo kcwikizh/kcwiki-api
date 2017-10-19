@@ -30,8 +30,14 @@ class TweetController extends BaseController
 
     private function handleCount($count, $option)
     {
-        $key = "tweet.$option.$count";
-        $url = "https://t.kcwiki.moe/?json=1&count=$count";
+        if (isset($_GET['until'])) {
+            $until = intval($_GET['until']);
+            $key = "tweet.$option.$count.$until";
+            $url = "https://t.kcwiki.moe/?json=flow.get&count=$count&until=$until";
+        } else {
+            $key = "tweet.$option.$count";
+            $url = "https://t.kcwiki.moe/?json=1&count=$count";
+        }
         return $this->handle($key, $url, $option);
     }
 

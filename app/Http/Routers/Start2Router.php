@@ -21,10 +21,16 @@ $app->post('/start2/upload', function(Request $request) {
     if (env('ADMIN_PASSWORD', 'admin') !== $inputs['password'])
         return Util::errorResponse('incorrect password');
     $start2 = json_decode($inputs['data'], true);
+    if (Util::exists('api_start2.prev.json')) {
+        $data = Util::load('api_start2.prev.json');
+        if (Util::compareJson($data, $start2))
+            return Util::errorResponse('duplicate start2 data');
+    }
     if (Util::exists('api_start2.json')) {
         $data = Util::load('api_start2.json');
         if (Util::compareJson($data, $start2))
             return Util::errorResponse('duplicate start2 data');
+        Util::copy('api_start2.json', 'api_start2.prev.json');
     }
     Util::dump('api_start2.json', $start2);
     $datetime = new DateTime();

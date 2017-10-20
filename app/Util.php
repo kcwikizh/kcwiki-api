@@ -58,6 +58,10 @@ class Util {
         return Storage::disk($driver)->exists($path);
     }
 
+    static public function copy($src, $dst) {
+        Util::dump($dst, Util::load($src));
+    }
+
     /**
      * Retrieve the json object from the disk
      *

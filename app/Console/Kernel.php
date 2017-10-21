@@ -9,6 +9,7 @@ use App\Console\Commands\ParseLuaTable;
 use App\Console\Commands\ParseDB;
 use App\Console\Commands\ParseReport;
 use App\Console\Commands\ParseServer;
+use App\Console\Commands\Diff;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,7 +23,8 @@ class Kernel extends ConsoleKernel
         ParseLuaTable::class,
         ParseDB::class,
         ParseReport::class,
-        ParseServer::class
+        ParseServer::class,
+        Diff::class
     ];
 
     /**

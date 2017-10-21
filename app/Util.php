@@ -1,5 +1,6 @@
 <?php
 namespace App;
+use App\Console\Commands\ParseDB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
@@ -106,31 +107,42 @@ class Util {
         Storage::disk($driver)->put($path, $raw);
     }
 
+
+    static $trace = [];
     /**
      * @param mixed $srcJson
      * @param mixed $dstJson
+     * @param integer $depth
      * @return bool
     */
-    static public function compareJson($srcJson, $dstJson) {
+    static public function compareJson($srcJson, $dstJson, $depth=0) {
         if (!is_array($srcJson) && !is_array($dstJson)) return ($srcJson === $dstJson);
         if (!is_array($srcJson) && is_array($dstJson) || is_array($srcJson) && !is_array($dstJson))
             return false;
+        if ($depth < 1)
+            self::$trace = [];
         foreach ($dstJson as $key => $value) {
-            if (!array_key_exists($key, $srcJson))
+            if (!array_key_exists($key, $srcJson)) {
+                array_push(self::$trace, 'dst.'.$key);
                 return false;
+            }
         }
         foreach ($srcJson as $key => $value) {
+            array_push(self::$trace, 'src.'.$key);
             if (!array_key_exists($key, $dstJson))
                 return false;
             if (is_array($value)) {
                 if (!is_array($dstJson[$key])) return false;
-                if (Util::compareJson($srcJson[$key], $dstJson[$key]))
+                if (Util::compareJson($srcJson[$key], $dstJson[$key], $depth + 1)) {
+                    array_pop(self::$trace);
                     continue;
-                else
+                } else {
                     return false;
+                }
             }
             if ($value !== $dstJson[$key])
                 return false;
+            array_pop(self::$trace);
         }
         return true;
     }

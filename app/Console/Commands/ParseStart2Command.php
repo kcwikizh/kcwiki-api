@@ -131,6 +131,9 @@ class ParseStart2 extends Command
             }
             if (array_key_exists('filename', $ship) && count($ship['filename']) > 0)
                 $kcdata[$i]['swf'] = "/kcs/resources/swf/ships/{$ship['filename']}.swf";
+            if (array_key_exists('after_ship_id', $ship) && $ship['after_ship_id']) {
+                $kcdata[$i]['after_ship_id'] = intval($ship['after_ship_id']);
+            }
         }
         Storage::disk('local')->put('ship/detailed/all.json', json_encode($kcdata));
         // extract ship filename

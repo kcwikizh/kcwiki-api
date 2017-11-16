@@ -2,7 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent, App\MapMaxHp;
+use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent, App\MapMaxHp, App\Expedition;
 use App\Util;
 
 // Reporter API
@@ -195,6 +195,27 @@ $app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $requ
     return response()->json(['result' => 'success']);
 }]);
 
+$app->get('/expedition', ['middleware' => 'report-cache', function(Request $request) {
+    $rules = [
+        'mapAreaId' => 'required|digits_between:1,3',
+        'mapId' => 'required|digits_between:1,3',
+        'cellId' => 'required|array',
+        'ships' => 'required|array'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
+    }
+    $inputs = $request->all();
+    Expedition::create([
+        'mapAreaId' => $inputs['mapAreaId'],
+        'mapId' => $inputs['mapId'],
+        'cellId' => $inputs['cellId'],
+        'ships' => $inputs['ships']
+    ]);
+    return response()->json(['result' => 'success']);
+}]);
+
 // Report Results
 $app->get('/report/enemies', ['middleware' => 'cache', function() {
     $raw = Util::load('report/enemy.json');
@@ -208,5 +229,10 @@ $app->get('/report/new', ['middleware' => 'cache', function() {
 
 $app->get('/report/tyku', ['middleware' => 'cache', function() {
     $raw = Util::load('report/tyku.json');
+    return $raw;
+}]);
+
+$app->get('/report/expedition', ['middleware' => 'cache', function() {
+    $raw = Util::load('report/expedition.json');
     return $raw;
 }]);

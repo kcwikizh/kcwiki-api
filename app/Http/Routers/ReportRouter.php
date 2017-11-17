@@ -195,7 +195,7 @@ $app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $requ
     return response()->json(['result' => 'success']);
 }]);
 
-$app->get('/expedition', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/expedition', ['middleware' => 'report-cache', function(Request $request) {
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -210,8 +210,8 @@ $app->get('/expedition', ['middleware' => 'report-cache', function(Request $requ
     Expedition::create([
         'mapAreaId' => $inputs['mapAreaId'],
         'mapId' => $inputs['mapId'],
-        'cellId' => $inputs['cellId'],
-        'ships' => $inputs['ships']
+        'cellId' => json.encode($inputs['cellId']),
+        'ships' => json.encode($inputs['ships'])
     ]);
     return response()->json(['result' => 'success']);
 }]);

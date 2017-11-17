@@ -35,6 +35,8 @@ class ParseReport extends Command
                 break;
             case 'newslot':
                 $this->handleNewShipSlotitem();
+            case 'battle':
+                $this->handleBattle();
         }
     }
 
@@ -205,7 +207,7 @@ class ParseReport extends Command
         Util::dump('report/tyku.json', $results);
     }
 
-    private function handleExpedition() {
+    private function handleBattle() {
         $results = DB::select('select mapId, mapAreaId, cellId as cellIds, ships from expedition;');
         Util::dump('report/battle.json', $results);
     }

@@ -2,10 +2,31 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent, App\MapMaxHp, App\Expedition;
+use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, App\MapEvent, App\MapMaxHp, App\ Expedition;
 use App\Util;
 
 // Reporter API
+$app->post('/expedition', ['middleware' => 'report-cache', function(Request $request) {
+    $rules = [
+        'mapAreaId' => 'required|digits_between:1,3',
+        'mapId' => 'required|digits_between:1,3',
+        'cellId' => 'required|max:100',
+        'ships' => 'required|max:100'
+    ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
+    }
+    $inputs = $request->all();
+    Expedition::create([
+        'mapAreaId' => $inputs['mapAreaId'],
+        'mapId' => $inputs['mapId'],
+        'cellId' => $inputs['cellId'],
+        'ships' => $inputs['ships']
+    ]);
+    return response()->json(['result' => 'success']);
+}]);
+
 $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
@@ -126,7 +147,7 @@ $app->post('/shipAttr', ['middleware' => 'report-cache', function(Request $reque
 
 $app->post('/initEquip', ['middleware' => 'report-cache', function(Request $request) {
     $rules = [
-        'ships' => 'required|array'
+        'ships' => 'required'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
@@ -191,27 +212,6 @@ $app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $requ
         'mapId' => $inputs['mapId'],
         'maxHp' => $inputs['maxHp'],
         'lv' => $inputs['lv']
-    ]);
-    return response()->json(['result' => 'success']);
-}]);
-
-$app->post('/expedition', ['middleware' => 'report-cache', function(Request $request) {
-    $rules = [
-        'mapAreaId' => 'required|digits_between:1,3',
-        'mapId' => 'required|digits_between:1,3',
-        'cellId' => 'required|array',
-        'ships' => 'required|array'
-    ];
-    $validator = Validator::make($request->all(), $rules);
-    if ($validator->fails()) {
-        return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
-    }
-    $inputs = $request->all();
-    Expedition::create([
-        'mapAreaId' => $inputs['mapAreaId'],
-        'mapId' => $inputs['mapId'],
-        'cellId' => json.encode($inputs['cellId']),
-        'ships' => json.encode($inputs['ships'])
     ]);
     return response()->json(['result' => 'success']);
 }]);

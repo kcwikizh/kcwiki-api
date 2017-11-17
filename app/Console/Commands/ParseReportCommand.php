@@ -205,6 +205,11 @@ class ParseReport extends Command
         Util::dump('report/tyku.json', $results);
     }
 
+    private function handleExpedition() {
+        $results = DB::select('select mapId, mapAreaId, cellId as cellIds, ships from expedition;');
+        Util::dump('report/battle.json', $results);
+    }
+
     private function getSlotItemNameById($id) {
         if ($id == -1 || $id == '-1') return '';
         foreach ($this->slotitems as $item) {

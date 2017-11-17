@@ -232,7 +232,7 @@ $app->get('/report/tyku', ['middleware' => 'cache', function() {
     return $raw;
 }]);
 
-$app->get('/report/expedition', ['middleware' => 'cache', function() {
-    $raw = Util::load('report/expedition.json');
+$app->get('/report/battle', ['middleware' => 'cache', function() {
+    $raw = Util::load('report/battle.json');
     return $raw;
 }]);

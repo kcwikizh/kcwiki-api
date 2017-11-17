@@ -147,3 +147,5 @@ API for kancolle game data. Powered By Lumen
 
 尝试运行命令 `composer dumpautoload -o`
 
+
+## __重要__：expedition 就是 battle （目前

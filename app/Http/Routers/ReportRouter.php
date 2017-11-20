@@ -10,20 +10,24 @@ $app->post('/expedition', ['middleware' => 'report-cache', function(Request $req
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
-        'cellId' => 'required|max:100',
-        'ships' => 'required|max:100'
+        'cellId' => 'required|array',
+        'ships' => 'required|array'
     ];
     $validator = Validator::make($request->all(), $rules);
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
     $inputs = $request->all();
-    Expedition::create([
+    $row = [
         'mapAreaId' => $inputs['mapAreaId'],
         'mapId' => $inputs['mapId'],
-        'cellId' => $inputs['cellId'],
-        'ships' => $inputs['ships']
-    ]);
+        'cellId' => json_encode($inputs['cellId']),
+        'ships' => json_encode($inputs['ships'])
+    ];
+    $hash = md5(json_encode($row));
+    if (Cache::has($hash)) return response()->json(['result' => 'hit']);
+    Cache::forever($hash, 1);
+    Expedition::create($row);
     return response()->json(['result' => 'success']);
 }]);
 
@@ -42,7 +46,7 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
     if ($validator->fails()) {
         return response()->json(['result'=>'error', 'reason'=> 'Data invalid']);
     }
-   Tyku::create([
+    Tyku::create([
       'mapAreaId' => $request->input('mapAreaId'),
       'mapId' => $request->input('mapId'),
       'cellId' => $request->input('cellId'),
@@ -50,7 +54,7 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
       'minTyku' => $request->input('minTyku'),
       'seiku' => $request->input('seiku'),
       'rank' => $request->input('rank')
-   ]);
+    ]);
     return response()->json(['result'=>'success']);
 }]);
 

@@ -181,8 +181,7 @@ class ParseReport extends Command
         $results = [];
         $rows = DB::select('select mapId,mapAreaId,cellId,count(*) as count from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
         foreach ($rows as $r) {
-            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=0 or seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
-                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
+            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=0 or seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
             $minTyku = DB::select("select min(maxTyku) as min,count(*) as count from tyku where (seiku=1 or seiku=2) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
                 ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
             if($maxTyku[0]->count == 0 && $minTyku[0]->count ==0) {

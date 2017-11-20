@@ -115,6 +115,10 @@ $app->post('/optime', function(Request $request){
     return response()->json(['result'=>'success'])->header('Access-Control-Allow-Origin', '*');
 });
 
+$app->get('/time', function() {
+    return response()->json(['result' => date('Y-m-d H:i:s', time())])->header('Access-Control-Allow-Origin', '*');
+});
+
 $app->get('/optime/{type}', ['as' => 'optime', 'middleware' => 'cache', function($type) {
     if ($type !== 'account' && $type !== 'server') return response()->json(['result' => 'error', 'reason' => 'invalid type']);
     try {

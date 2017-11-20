@@ -6,7 +6,7 @@ use App\Tyku, App\Path, App\EnemyFleet, App\Enemy, App\ShipAttr, App\InitEquip, 
 use App\Util;
 
 // Reporter API
-$app->post('/expedition', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/expedition', function(Request $request) {
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -29,9 +29,9 @@ $app->post('/expedition', ['middleware' => 'report-cache', function(Request $req
     Cache::forever($hash, 1);
     Expedition::create($row);
     return response()->json(['result' => 'success']);
-}]);
+});
 
-$app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
+$app->post('/tyku', function(Request $request){
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -56,9 +56,9 @@ $app->post('/tyku', ['middleware' => 'report-cache',function(Request $request){
       'rank' => $request->input('rank')
     ]);
     return response()->json(['result'=>'success']);
-}]);
+});
 
-$app->post('/path', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/path', function(Request $request) {
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -76,9 +76,9 @@ $app->post('/path', ['middleware' => 'report-cache', function(Request $request) 
 //       'decks' => json_encode($request->input('decks'))
 //    ]);
     return response()->json(['result'=>'success']);
-}]);
+});
 
-$app->post('/enemy', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/enemy', function(Request $request) {
     $rules = [
         'enemyId' => 'required|array',
         'maxHP' => 'required|array',
@@ -123,9 +123,9 @@ $app->post('/enemy', ['middleware' => 'report-cache', function(Request $request)
         Enemy::create($row);
     }
     return response()->json(['result'=>'success']);
-}]);
+});
 
-$app->post('/shipAttr', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/shipAttr', function(Request $request) {
     $rules = [
         'sortno' => 'required|digits_between:1,4',
         'taisen' => 'required|digits_between:1,3',
@@ -147,9 +147,9 @@ $app->post('/shipAttr', ['middleware' => 'report-cache', function(Request $reque
        'level' => $request->input('level')
     ]);
     return response()->json(['result'=>'success']);
-}]);
+});
 
-$app->post('/initEquip', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/initEquip', function(Request $request) {
     $rules = [
         'ships' => 'required'
     ];
@@ -167,9 +167,9 @@ $app->post('/initEquip', ['middleware' => 'report-cache', function(Request $requ
         InitEquip::create($row);
     }
     return response()->json(['result'=>'success']);
-}]);
+});
 
-$app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $request) {
+$app->post('/mapEvent', function(Request $request) {
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -197,9 +197,9 @@ $app->post('/mapEvent', ['middleware' => 'report-cache', function(Request $reque
         ]);
     }
     return response()->json(['result' => 'success']);
-}]);
+});
 
-$app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $request) {
+$app->get('/map/max/hp', function(Request $request) {
     $rules = [
         'mapAreaId' => 'required|digits_between:1,3',
         'mapId' => 'required|digits_between:1,3',
@@ -218,7 +218,7 @@ $app->get('/map/max/hp', ['middleware' => 'report-cache', function(Request $requ
         'lv' => $inputs['lv']
     ]);
     return response()->json(['result' => 'success']);
-}]);
+});
 
 // Report Results
 $app->get('/report/enemies', ['middleware' => 'cache', function() {

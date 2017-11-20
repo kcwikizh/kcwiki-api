@@ -15,7 +15,7 @@ class ParseReport extends Command
     protected $description = 'Generate data from kcwiki-report';
 
     // Target enemy ships
-    private $enemies = ["集積地夏姫", "空母夏鬼", "戦艦仏棲姫-壊", "戦艦仏棲姫", "潜水新棲姫", "欧州棲姫", "欧州棲姫-壊"];
+    private $enemies = ["防空埋護姫","海峡夜棲姫-壊","海峡夜棲姫"];
 
     // Target new ships (Ship ID)
     private $new = [433, 438, 457, 369, 472, 370, 491, 372];
@@ -181,8 +181,7 @@ class ParseReport extends Command
         $results = [];
         $rows = DB::select('select mapId,mapAreaId,cellId,count(*) as count from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
         foreach ($rows as $r) {
-            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=0 or seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
-                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
+            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=0 or seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
             $minTyku = DB::select("select min(maxTyku) as min,count(*) as count from tyku where (seiku=1 or seiku=2) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
                 ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
             if($maxTyku[0]->count == 0 && $minTyku[0]->count ==0) {

@@ -96,7 +96,7 @@ $app->get('/subtitles/detail', ['middleware' => 'cache', function() {
                 $md5 = md5($filename);
                 $dir = substr($md5,0,1);
                 $subdir = substr($md5,0,2);
-                $item['url'] = "https://kc.6candy.com/commons/$dir/$subdir/$filename";
+                $item['url'] = "https://upload.kcwiki.org/commons/$dir/$subdir/$filename";
                 $item['scene'] = Util::$vcScenes[$voiceId];
                 $item['voiceId'] = $voiceId;
                 array_push($result, $item);

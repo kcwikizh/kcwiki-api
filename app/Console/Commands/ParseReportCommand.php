@@ -37,6 +37,8 @@ class ParseReport extends Command
                 $this->handleNewShipSlotitem();
             case 'battle':
                 $this->handleBattle();
+            case 'paths':
+                $this->handlePaths();
         }
     }
 
@@ -44,15 +46,10 @@ class ParseReport extends Command
         $results = [];
         $missing = [];
         $ships = Util::load('ship/all.json');
-        foreach ($this->enemies as $enemy) {
-            $found = false;
-            foreach ($ships as $ship) {
-                if ($ship['name'] == $enemy) {
-                    array_push($results, $ship);
-                    $found = true;
-                }
+        foreach ($ships as $ship) {
+            if ($ship['id'] > 1000) {
+                array_push($results, $ship);
             }
-            if (!$found) array_push($missing, $enemy);
         }
         foreach ($results as &$result) {
             $id = $result['id'];
@@ -61,11 +58,11 @@ class ParseReport extends Command
                 ['enemyId' => $id]);
             if (count($row) > 0) {
                 $result['slots'] = [
-                    $this->getSlotItemNameById($row[0]->slot1),
-                    $this->getSlotItemNameById($row[0]->slot2),
-                    $this->getSlotItemNameById($row[0]->slot3),
-                    $this->getSlotItemNameById($row[0]->slot4),
-                    $this->getSlotItemNameById($row[0]->slot5)
+                    $row[0]->slot1,
+                    $row[0]->slot2,
+                    $row[0]->slot3,
+                    $row[0]->slot4,
+                    $row[0]->slot5
                 ];
                 $result['stats'] = [
                     'maxHP' => $row[0]->maxHP,
@@ -179,11 +176,11 @@ class ParseReport extends Command
 
     private function handleTyku() {
         $results = [];
-        $rows = DB::select('select mapId,mapAreaId,cellId,count(*) as count from tyku group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
+        $rows = DB::select('select tyku.mapId,tyku.mapAreaId,tyku.cellId,enemy_fleets.fleets as fleets,count(*) as count from tyku inner join enemy_fleets on tyku.mapId=enemy_fleets.mapId and tyku.mapAreaId=enemy_fleets.mapAreaId and tyku.cellId=enemy_fleets.cellId and tyku.created_at=enemy_fleets.created_at group by mapId,mapAreaId,cellId order by mapId,mapAreaId,cellId');
         foreach ($rows as $r) {
-            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku where (seiku=0 or seiku=3 or seiku=4) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
-            $minTyku = DB::select("select min(maxTyku) as min,count(*) as count from tyku where (seiku=1 or seiku=2) and mapId=:mapId and mapAreaId=:mapAreaId and cellId=:cellId",
-                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId]);
+            $maxTyku = DB::select("select max(maxTyku) as max,count(*) as count from tyku inner join enemy_fleets on tyku.mapId=enemy_fleets.mapId and tyku.mapAreaId=enemy_fleets.mapAreaId and tyku.cellId=enemy_fleets.cellId and tyku.created_at=enemy_fleets.created_at where (seiku=0 or seiku=3 or seiku=4) and tyku.mapId=:mapId and tyku.mapAreaId=:mapAreaId and tyku.cellId=:cellId and fleets=:fleets",                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId, 'fleets' => $r->fleets]);
+            $minTyku = DB::select("select min(maxTyku) as min,count(*) as count from tyku inner join enemy_fleets on tyku.mapId=enemy_fleets.mapId and tyku.mapAreaId=enemy_fleets.mapAreaId and tyku.cellId=enemy_fleets.cellId and tyku.created_at=enemy_fleets.created_at where (seiku=1 or seiku=2) and tyku.mapId=:mapId and tyku.mapAreaId=:mapAreaId and tyku.cellId=:cellId and fleets=:fleets",
+                ['mapId' => $r->mapId, 'mapAreaId' => $r->mapAreaId, 'cellId' => $r->cellId, 'fleets' => $r->fleets]);
             if($maxTyku[0]->count == 0 && $minTyku[0]->count ==0) {
                 $tyku = -1;
             } else if($maxTyku[0]->count == 0) {
@@ -199,11 +196,12 @@ class ParseReport extends Command
                 'mapId' => $r->mapId,
                 'mapAreaId' => $r->mapAreaId,
                 'cellId' => $r->cellId,
+                'fleets' => $r->fleets,
                 'tyku' => $tyku,
                 'count' => $r->count
             ]);
         }
-        Util::dump('report/tyku.json', $results);
+        Util::dump('report/tyku_by_fleets.json', $results);
     }
 
     private function handleBattle() {
@@ -222,5 +220,10 @@ class ParseReport extends Command
     private function getShipAttrByLevel($sortno, $level) {
         return DB::select('select count(*) as counts, sortno, taisen, kaihi, sakuteki, luck, level from ship_attrs where level=:level and sortno=:sortno group by taisen,kaihi,sakuteki,luck order by counts desc limit 1',
             ['sortno' => $sortno, 'level' => $level]);
+    }
+
+    private function handlePaths() {
+        $results = DB::select('select mapId, mapAreaId, decks, path, count(*) as counts from paths group by mapId, mapAreaId, decks, path');
+        Util::dump('report/paths.json', $results);
     }
 }

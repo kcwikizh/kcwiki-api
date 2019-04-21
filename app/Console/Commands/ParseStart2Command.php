@@ -67,7 +67,7 @@ class ParseStart2 extends Command
         "wed_b" => "api_wedb"
     ];
     private $ship_common_keys = ['id', 'name', 'sort_no', 'stype', 'after_ship_id',
-        'filename', 'wiki_id', 'chinese_name', 'stype_name', 'stype_name_chinese'];
+        'filename', 'wiki_id', 'chinese_name', 'stype_name', 'stype_name_chinese','can_drop'];
     private $ship_type_chinese = ["海防舰", "驱逐舰", "轻巡洋舰", "重雷装巡洋舰", "重巡洋舰", "航空巡洋舰",
         "轻空母", "战舰", "战舰", "航空战舰", "正规空母", "超弩级战舰", "潜水舰", "潜水空母", "补给舰",
         "水上机母舰", "扬陆舰", "装甲空母", "工作舰", "潜水母舰", "练习巡洋舰", "补给舰"];
@@ -91,8 +91,8 @@ class ParseStart2 extends Command
 
     public function handle()
     {
-        $this->info('Fetching http://kcwikizh.github.io/kcdata/ship/all.json ...');
-        $kcdata = $this->sort(json_decode(file_get_contents('http://kcwikizh.github.io/kcdata/ship/all.json'), true), 'id');
+        $this->info('Fetching https://kcwikizh.github.io/kcdata/ship/all.json ...');
+        $kcdata = $this->sort(json_decode(file_get_contents('https://kcwikizh.github.io/kcdata/ship/all.json'), true), 'id');
         try {
             $start2data = json_decode(Storage::disk('local')->get('api_start2.json'), true);
         } catch (FileNotFoundException $e) {
